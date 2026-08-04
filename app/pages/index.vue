@@ -1,0 +1,3 @@
+<template>
+  Дома
+</template>
