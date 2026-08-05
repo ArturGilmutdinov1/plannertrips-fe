@@ -3,6 +3,8 @@
 </script>
 
 <template>
-  <Header/>
-  <NuxtPage/>
+    <UApp>
+      <Header/>
+      <NuxtPage/>
+    </UApp>
 </template>
