@@ -1,10 +1,8 @@
-<script setup>
-
-</script>
-
 <template>
-    <UApp>
-      <Header/>
-      <NuxtPage/>
-    </UApp>
+  <UApp>
+    <div>
+      <Header />
+      <NuxtPage />
+    </div>
+  </UApp>
 </template>

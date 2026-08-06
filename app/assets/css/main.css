@@ -1,16 +1,12 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-/* app/assets/css/main.css */
-@import "tailwindcss";
-@import "@nuxt/ui";
-
-@theme {
-  /* 🌿 Зеленые (природа) */
+@theme static {
+  /* Зеленые (природа) */
   --color-emerald-50: #F0FBF2;
   --color-emerald-100: #DCF7E0;
   --color-emerald-200: #B8EFC1;
-  --color-emerald-300: #86CB92;    /* основной изумруд */
+  --color-emerald-300: #86CB92;
   --color-emerald-400: #6AB87A;
   --color-emerald-500: #4FA562;
   --color-emerald-600: #3D8A4E;
@@ -19,12 +15,12 @@
   --color-emerald-900: #143A1C;
   --color-emerald-950: #0A2010;
 
-  /* 🍃 Мятные (спокойствие) */
+  /* Мятные (спокойствие) */
   --color-mint-50: #F2F9F5;
   --color-mint-100: #E0F2E8;
   --color-mint-200: #C1E5D1;
   --color-mint-300: #A2D8BA;
-  --color-mint-400: #71B48D;      /* основной мята */
+  --color-mint-400: #71B48D;
   --color-mint-500: #5A9D76;
   --color-mint-600: #44865F;
   --color-mint-700: #306F4A;
@@ -32,47 +28,59 @@
   --color-mint-900: #0F4124;
   --color-mint-950: #072A16;
 
-  /* 🌌 Синие (сумерки) */
+  /* Песочные (тепло travel) */
+  --color-sand-50: #FBF8F3;
+  --color-sand-100: #F5EFE4;
+  --color-sand-200: #EADCC8;
+  --color-sand-300: #DCC4A0;
+  --color-sand-400: #C9A878;
+  --color-sand-500: #B8925A;
+  --color-sand-600: #9A7648;
+  --color-sand-700: #7A5C38;
+  --color-sand-800: #5C442A;
+  --color-sand-900: #3D2D1C;
+  --color-sand-950: #241A10;
+
+  /* Синие (сумерки) */
   --color-twilight-50: #F0F2F8;
   --color-twilight-100: #DCE1F0;
   --color-twilight-200: #B9C3E1;
   --color-twilight-300: #96A5D2;
   --color-twilight-400: #7387C3;
-  --color-twilight-500: #404E7C;   /* основной сумерки */
+  --color-twilight-500: #404E7C;
   --color-twilight-600: #333E64;
   --color-twilight-700: #272E4C;
   --color-twilight-800: #1B1F34;
   --color-twilight-900: #0F111C;
   --color-twilight-950: #080A10;
 
-  /* 🌌 Космические (индиго) */
+  /* Космические (индиго) */
   --color-cosmic-50: #F0EEF6;
   --color-cosmic-100: #DDDAEC;
   --color-cosmic-200: #BBB5D9;
   --color-cosmic-300: #9990C6;
   --color-cosmic-400: #7770B3;
-  --color-cosmic-500: #251F47;     /* основной космический */
+  --color-cosmic-500: #251F47;
   --color-cosmic-600: #1E1939;
   --color-cosmic-700: #17132B;
   --color-cosmic-800: #100D1D;
   --color-cosmic-900: #09070F;
   --color-cosmic-950: #050409;
 
-  /* 🌙 Ночные (фиалка) */
+  /* Ночные (фиалка) */
   --color-violet-50: #F5EEF5;
   --color-violet-100: #EAD9EA;
   --color-violet-200: #D5B3D5;
   --color-violet-300: #C08DC0;
   --color-violet-400: #AB67AB;
-  --color-violet-500: #260F26;     /* основной полуночная */
+  --color-violet-500: #260F26;
   --color-violet-600: #1E0C1E;
   --color-violet-700: #160916;
   --color-violet-800: #0E060E;
   --color-violet-900: #060306;
   --color-violet-950: #030103;
+}
 
-  /* Назначение ролей */
-  --color-primary: var(--color-twilight-500);   /* #404E7C - основной */
-  --color-secondary: var(--color-emerald-300);  /* #86CB92 - акцент */
-  --color-accent: var(--color-cosmic-500);      /* #251F47 - для избранного */
+:root {
+  
 }

@@ -1,6 +1,5 @@
-<template> 
+<template>
  <header>
-      <NuxtLink to="/CreateTravel">Создать</NuxtLink>
-  </header>  
+    <NuxtLink to="/CreateTravel">Создать</NuxtLink>
+  </header>
 </template>
-
