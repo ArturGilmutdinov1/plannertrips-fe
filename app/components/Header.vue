@@ -1,3 +1,7 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
   <UHeader>
      <template #title>
@@ -10,7 +14,10 @@
     </template>
     
     <template #right>
-      <UColorModeButton />
+
+        <ModalCreateRoute/>
+
+        <UColorModeButton />
 
       <UButton
           to="/login"

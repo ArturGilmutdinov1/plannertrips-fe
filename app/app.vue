@@ -2,7 +2,9 @@
   <UApp>
     <div>
       <Header />
-      <NuxtPage />
+        <UContainer>
+          <NuxtPage />
+        </UContainer>
     </div>
   </UApp>
 </template>
