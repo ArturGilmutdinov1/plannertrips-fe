@@ -1,12 +1,13 @@
 <template>
     <UModal title="Маршрут">
-        <Button label="Создать маршрут" />
+        <UButton label="Создать маршрут"/>
             <template #body>
-                    
+                    <SelectCountry/>
             </template>
     </UModal>
 </template>
 
 <script>
+
 
 </script>
