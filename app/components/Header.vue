@@ -13,7 +13,7 @@
     </template>
 
     <template #right>
-      <ModalCreateRoute />
+      <ModalCreateTrip />
 
       <UColorModeButton />
 

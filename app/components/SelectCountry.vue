@@ -1,44 +1,42 @@
 <template>
-  <UForm :state="state" @submit="onSubmit">
-    <div>
-      Название путешествия
-      <UInput v-model="modalStore.name" />
-    </div>
-    <div>
-      Страна
-      <USelectMenu
-        v-model="modalStore.country"
-        :items="countryData"
-        name="country"
-        class="w-48"
-      />
-    </div>
-    <UButton type="submit">Создать</UButton>
-  </UForm>
+  <USelectMenu
+    v-model="selectedCountry"
+    :items="countryData"
+    name="country"
+    class="w-48"
+  />
 </template>
 
 <script setup lang="ts">
-import { useTripModalStore } from "../stores/tripModalStore";
-import { navigateTo } from "nuxt/app";
+import { ref, computed, onMounted } from "vue";
 
-const modalStore = useTripModalStore();
+const selectedCountry = ref<string>("");
+const countries = ref<any[]>([]);
+onMounted(async () => {
+  try {
+    const { data, error } = await useFetch("/api/locationSearch");
 
-//Загрузка стран в лукап
-const { data } = await useFetch("/api/locationSearch");
-const countryData = computed(() => {
-  if (!data.value) return [];
-  return data.value.map((item) => {
-    return {
-      label: item.translations?.ru,
-      value: item.code,
-    };
-  });
+    if (error.value) {
+      console.error("Ошибка загрузки:", error.value);
+      return;
+    }
+
+    if (data.value) {
+      countries.value = data.value;
+    }
+  } catch (err) {
+    console.error("Ошибка:", err);
+  }
 });
-const items = countryData;
 
-function onSubmit(event) {
-  navigateTo({
-    path: "/create-travel",
-  });
-}
+const countryData = computed(() => {
+  if (!countries.value || !Array.isArray(countries.value)) return [];
+
+  return countries.value
+    .filter((item: any) => item?.code)
+    .map((item: any) => ({
+      label: item.translations?.ru || item.name || item.code,
+      value: item.code,
+    }));
+});
 </script>
