@@ -1,33 +1,29 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <UHeader>
-     <template #title>
+    <template #title>
       <UColorModeImage
-          light="/logo.png"
-          dark="/logo.png"
-          :width="240"
-          :height="36"
-          class="self-center translate-y-1"/>
+        light="/logo.png"
+        dark="/logo.png"
+        :width="240"
+        :height="36"
+        class="self-center translate-y-1"
+      />
     </template>
-    
+
     <template #right>
+      <ModalCreateRoute />
 
-        <ModalCreateRoute/>
-
-        <UColorModeButton />
+      <UColorModeButton />
 
       <UButton
-          to="/login"
-          color="primary"
-          variant="solid"
-          size="sm"
-          label="Войти"
-        />
-
+        to="/login"
+        color="primary"
+        variant="solid"
+        size="sm"
+        label="Войти"
+      />
     </template>
-
-</UHeader>
+  </UHeader>
 </template>

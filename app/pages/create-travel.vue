@@ -1,5 +1,5 @@
 <template>
-    Здесь
+    <UButton >
 </template>
 
 <script lang="ts">

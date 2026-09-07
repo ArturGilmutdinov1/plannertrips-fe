@@ -1,16 +1,16 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'twilight',
-      secondary: 'emerald',
-      accent: 'sand',
-      neutral: 'slate'
+      primary: "twilight",
+      secondary: "emerald",
+      accent: "sand",
+      neutral: "slate",
     },
     button: {
       defaultVariants: {
-        color: 'primary',
-        variant: 'solid'
-      }
-    }
-  }
-})
+        color: "primary",
+        variant: "solid",
+      },
+    },
+  },
+});

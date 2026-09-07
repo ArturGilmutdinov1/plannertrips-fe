@@ -1,18 +1,18 @@
-export const useTripModalStore = defineStore('tripStore', {
+export const useTripModalStore = defineStore("tripStore", {
   state: () => ({
-    name: '',
-    country: ''
+    name: "",
+    country: "",
   }),
-  
+
   actions: {
     setTripModalData(name, country) {
-      this.name = name
-      this.country = country
+      this.name = name;
+      this.country = country;
     },
-    
+
     clearTripData() {
-      this.name = ''
-      this.country = ''
-    }
-  }
-})
+      this.name = "";
+      this.country = "";
+    },
+  },
+});
