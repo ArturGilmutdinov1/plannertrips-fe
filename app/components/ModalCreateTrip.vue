@@ -7,7 +7,7 @@
           Название путешествия
           <UInput v-model="state.name" />
         </div>
-        <div>Страна <SelectCountry /></div>
+        <div>Страна <SelectCountry v-model="state.country" /></div>
         <UButton type="submit">Создать</UButton>
       </UForm>
     </template>

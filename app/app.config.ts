@@ -12,5 +12,12 @@ export default defineAppConfig({
         variant: "solid",
       },
     },
+    pageHeader: {
+      slots: {
+        root: () => "relative py-4",
+        title: () => "text-xl font-bold text-highlighted",
+        description: () => "text-sm",
+      },
+    },
   },
 });

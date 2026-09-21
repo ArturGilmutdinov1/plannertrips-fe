@@ -1,3 +1,5 @@
-<template></template>
+<template><CreatTrip /></template>
+
+<script setup lang="ts"></script>
 
 <style></style>
