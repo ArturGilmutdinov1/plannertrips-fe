@@ -1,10 +1,11 @@
 <template>
   <UApp>
-    <div>
+    <div class="min-h-screen bg-muted/30">
       <Header />
-        <UContainer>
-          <NuxtPage />
-        </UContainer>
+
+      <UContainer class="py-6">
+        <NuxtPage />
+      </UContainer>
     </div>
   </UApp>
 </template>
