@@ -39,7 +39,9 @@ onMounted(async () => {
   isLoading.value = true;
 
   try {
-    const { data, error } = await useFetch<CountrySource[]>("/api/locationSearch");
+    const { data, error } = await useFetch<CountrySource[]>(
+      "/api/locationSearch",
+    );
 
     if (error.value) {
       console.error("Ошибка загрузки:", error.value);

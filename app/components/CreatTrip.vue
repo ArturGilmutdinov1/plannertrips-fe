@@ -1,9 +1,6 @@
 <template>
   <div class="py-8">
-    <UPageHeader
-      :title="pageTitle"
-      :description="pageDescription"
-    />
+    <UPageHeader :title="pageTitle" :description="pageDescription" />
 
     <UPageBody>
       <UCard class="border-dashed">
@@ -19,16 +16,12 @@
               Маршрут пока пустой
             </h2>
             <p class="max-w-md text-sm text-muted">
-              Добавьте первые места поездки, а позже здесь появятся дни,
-              точки маршрута и карта.
+              Добавьте первые места поездки, а позже здесь появятся дни, точки
+              маршрута и карта.
             </p>
           </div>
 
-          <UButton
-            icon="i-lucide-plus"
-            label="Добавить место"
-            variant="soft"
-          />
+          <UButton icon="i-lucide-plus" label="Добавить место" variant="soft" />
         </div>
       </UCard>
     </UPageBody>
@@ -47,6 +40,6 @@ const pageTitle = computed(() => name.value || "Новый маршрут");
 const pageDescription = computed(() =>
   country.value?.label
     ? `План поездки: ${country.value.label}`
-    : "Начните собирать маршрут по дням и местам"
+    : "Начните собирать маршрут по дням и местам",
 );
 </script>
