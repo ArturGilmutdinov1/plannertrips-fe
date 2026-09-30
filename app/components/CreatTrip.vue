@@ -4,7 +4,9 @@
 
     <UPageBody>
       <UCard class="border-dashed">
-        <div class="flex flex-col items-center gap-4 py-12 text-center">
+        <div
+          class="flex flex-col items-center justify-center gap-4 py-12 text-center min-h-[400px]"
+        >
           <UAvatar
             icon="i-lucide-map-pinned"
             size="xl"
@@ -16,8 +18,7 @@
               Маршрут пока пустой
             </h2>
             <p class="max-w-md text-sm text-muted">
-              Добавьте первые места поездки, а позже здесь появятся дни, точки
-              маршрута и карта.
+              Добавьте первые места поездки
             </p>
           </div>
 

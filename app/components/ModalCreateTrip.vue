@@ -3,19 +3,18 @@
     title="Новый маршрут"
     description="Задайте название и страну, чтобы начать планировать поездку."
   >
-    <UButton
-      label="Создать маршрут"
-      icon="i-lucide-route"
-      size="sm"
-      class="shadow-sm"
-    />
+    <UCard
+      class="cursor-pointer border-dashed flex items-center justify-center min-h-24 hover:ring-2 hover:ring-primary/50 transition"
+      click="onSubmit"
+    >
+      <div class="flex items-center gap-2 text-primary">
+        <UIcon name="i-lucide-plus" class="text-lg" />
+        <span class="text-sm font-medium">Добавить маршрут</span>
+      </div>
+    </UCard>
 
     <template #body>
-      <UForm
-        :state="state"
-        class="space-y-5"
-        @submit="onSubmit"
-      >
+      <UForm :state="state" class="space-y-5" @submit="onSubmit">
         <div class="space-y-2">
           <label class="text-sm font-medium text-highlighted">
             Название путешествия
@@ -25,13 +24,12 @@
             icon="i-lucide-map"
             placeholder="Например, Весна в Грузии"
             size="lg"
+            class="w-full"
           />
         </div>
 
         <div class="space-y-2">
-          <label class="text-sm font-medium text-highlighted">
-            Страна
-          </label>
+          <label class="text-sm font-medium text-highlighted"> Страна </label>
           <SelectCountry v-model="state.country" />
         </div>
 

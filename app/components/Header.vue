@@ -13,8 +13,6 @@
     </template>
 
     <template #right>
-      <ModalCreateTrip />
-
       <UColorModeButton />
 
       <UButton
