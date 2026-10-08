@@ -66,7 +66,7 @@ const state = reactive({
 function onSubmit() {
   modalStore.setTripModalData(state.name, state.country);
   navigateTo({
-    path: "/create-travel",
+    path: "/trips/1",
   });
 }
 </script>

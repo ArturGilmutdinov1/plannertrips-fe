@@ -39,31 +39,37 @@
 <script setup lang="ts">
 const items = [
   {
+    id: 1,
     icon: "i-lucide-map-pinned",
     title: "Россия",
     description: "Старый город, серные бани",
   },
   {
+    id: 2,
     icon: "i-lucide-mountain",
     title: "Япония",
     description: "Горы, Гергети и дорога ",
   },
   {
+    id: 3,
     icon: "i-lucide-waves",
     title: "Германия",
     description: "Море, набережная и башня с часами.",
   },
   {
+    id: 4,
     icon: "i-lucide-grape",
     title: "Грузия",
     description: "Винодельни",
   },
   {
+    id: 5,
     icon: "i-lucide-landmark",
     title: "Франция",
     description: "Древняя столица",
   },
   {
+    id: 6,
     icon: "i-lucide-landmark",
     title: "США",
     description: "Древняя столица, ",

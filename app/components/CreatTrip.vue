@@ -1,5 +1,5 @@
 <template>
-  <div class="py-8">
+  <UPage>
     <UPageHeader :title="pageTitle" :description="pageDescription" />
 
     <UPageBody>
@@ -21,12 +21,11 @@
               Добавьте первые места поездки
             </p>
           </div>
-
-          <UButton icon="i-lucide-plus" label="Добавить место" variant="soft" />
+          <AddTripDetailCard />
         </div>
       </UCard>
     </UPageBody>
-  </div>
+  </UPage>
 </template>
 
 <script setup lang="ts">
