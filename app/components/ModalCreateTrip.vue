@@ -1,24 +1,33 @@
 <template>
   <UModal
+    v-model:open="isOpen"
     title="Новый маршрут"
     description="Задайте название и страну, чтобы начать планировать поездку."
   >
     <UCard
       class="cursor-pointer border-dashed flex items-center justify-center min-h-24 hover:ring-2 hover:ring-primary/50 transition"
-      click="onSubmit"
     >
       <div class="flex items-center gap-2 text-primary">
-        <UIcon name="i-lucide-plus" class="text-lg" />
+        <UIcon
+          name="i-lucide-plus"
+          class="text-lg"
+        />
         <span class="text-sm font-medium">Добавить маршрут</span>
       </div>
     </UCard>
 
     <template #body>
-      <UForm :state="state" class="space-y-5" @submit="onSubmit">
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-highlighted">
-            Название путешествия
-          </label>
+      <UForm
+        :state="state"
+        :validate="validate"
+        class="space-y-5"
+        @submit="onSubmit"
+      >
+        <UFormField
+          label="Название путешествия"
+          name="name"
+          required
+        >
           <UInput
             v-model="state.name"
             icon="i-lucide-map"
@@ -26,12 +35,14 @@
             size="lg"
             class="w-full"
           />
-        </div>
+        </UFormField>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-highlighted"> Страна </label>
+        <UFormField
+          label="Страна"
+          name="country"
+        >
           <SelectCountry v-model="state.country" />
-        </div>
+        </UFormField>
 
         <div class="flex justify-end pt-2">
           <UButton
@@ -40,6 +51,7 @@
             trailing
             size="lg"
             label="Создать"
+            :loading="isSubmitting"
           />
         </div>
       </UForm>
@@ -48,25 +60,44 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
-import { useTripModalStore } from "../stores/tripModalStore";
-import { navigateTo } from "nuxt/app";
+import type { FormError } from "@nuxt/ui";
+import type { CountryOption, CreateTripPayload, Trip } from "#shared/types/trip";
 
-type CountryOption = {
-  label: string;
-  value: string;
-};
+const toast = useToast();
 
-const modalStore = useTripModalStore();
-const state = reactive({
+const isOpen = ref(false);
+const isSubmitting = ref(false);
+const state = reactive<{ name: string; country: CountryOption | undefined }>({
   name: "",
-  country: null as CountryOption | null,
+  country: undefined,
 });
 
-function onSubmit() {
-  modalStore.setTripModalData(state.name, state.country);
-  navigateTo({
-    path: "/trips/1",
-  });
+function validate(form: Partial<typeof state>): FormError[] {
+  return form.name?.trim()
+    ? []
+    : [{ name: "name", message: "Введите название" }];
+}
+
+async function onSubmit() {
+  isSubmitting.value = true;
+
+  try {
+    const payload: CreateTripPayload = {
+      name: state.name,
+      country: state.country ?? null,
+    };
+    const trip = await $fetch<Trip>("/api/trips", { method: "POST", body: payload });
+
+    isOpen.value = false;
+    state.name = "";
+    state.country = undefined;
+
+    await refreshNuxtData("trips");
+    await navigateTo(`/trips/${trip.id}`);
+  } catch {
+    toast.add({ title: "Не удалось создать маршрут", color: "error" });
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 </script>

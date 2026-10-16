@@ -1,5 +1,3 @@
-<template>Тест</template>
-
-<scripts>
-
-</scripts>
+<template>
+  <div>Тест</div>
+</template>

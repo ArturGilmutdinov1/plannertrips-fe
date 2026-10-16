@@ -1,6 +1,6 @@
-<script setup lang="ts"></script>
-
 <template>
-  <PopularCountriesCarousel />
-  <MyTripsCardGrid />
+  <div>
+    <PopularCountriesCarousel />
+    <MyTripsCardGrid />
+  </div>
 </template>

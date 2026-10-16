@@ -27,16 +27,14 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
-    "/": { prerender: true },
-  },
-
   compatibilityDate: "2026-06-30",
 
   eslint: {
     config: {
       stylistic: {
-        commaDangle: "never",
+        quotes: "double",
+        semi: true,
+        commaDangle: "always-multiline",
         braceStyle: "1tbs",
       },
     },

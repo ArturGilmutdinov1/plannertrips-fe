@@ -1,6 +1,9 @@
 <template>
   <UPage>
-    <UPageHeader :title="pageTitle" :description="pageDescription" />
+    <UPageHeader
+      :title="pageTitle"
+      :description="pageDescription"
+    />
 
     <UPageBody>
       <UCard class="border-dashed">
@@ -29,17 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import type { Trip } from "#shared/types/trip";
 
-const tripModalStore = useTripModalStore();
+const props = defineProps<{ trip: Trip }>();
 
-const { name, country } = storeToRefs(tripModalStore);
-
-const pageTitle = computed(() => name.value || "Новый маршрут");
+const pageTitle = computed(() => props.trip.name || "Новый маршрут");
 const pageDescription = computed(() =>
-  country.value?.label
-    ? `План поездки: ${country.value.label}`
+  props.trip.country?.label
+    ? `План поездки: ${props.trip.country.label}`
     : "Начните собирать маршрут по дням и местам",
 );
 </script>
