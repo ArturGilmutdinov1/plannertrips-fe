@@ -1,3 +1,1 @@
-<template>
-  <div>Тест</div>
-</template>
+<template><PlaceForm /></template>
