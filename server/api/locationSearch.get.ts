@@ -1,7 +1,5 @@
-import CountriesData from '@innovayse/geo-atlas/lite'
+import CountriesData from "@innovayse/geo-atlas/lite";
 
-export default defineEventHandler((event) => {
-  const data = CountriesData.getCountries ( )
-  return data
-})
-
+export default defineEventHandler(() => {
+  return CountriesData.getCountries();
+});
