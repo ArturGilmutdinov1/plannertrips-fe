@@ -1,6 +1,7 @@
 import type { CreateTripPayload, Trip } from "#shared/types/trip";
 
 export default defineEventHandler(async (event) => {
+  const user = await requireUser(event);
   const body = await readBody<Partial<CreateTripPayload>>(event);
   const name = body?.name?.trim();
 
@@ -10,14 +11,14 @@ export default defineEventHandler(async (event) => {
 
   const trip: Trip = {
     id: crypto.randomUUID(),
+    ownerId: user.id,
     name,
     description: "",
     country: body.country ?? null,
     createdAt: new Date().toISOString(),
   };
 
-  const trips = await getTrips();
-  await saveTrips([...trips, trip]);
+  await addTrip(trip);
 
   setResponseStatus(event, 201);
   return trip;

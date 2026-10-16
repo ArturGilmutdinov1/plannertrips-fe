@@ -8,6 +8,8 @@
 <script setup lang="ts">
 import type { Trip } from "#shared/types/trip";
 
+definePageMeta({ middleware: "auth" });
+
 const route = useRoute();
 
 const { data: trip, error } = await useFetch<Trip>(() => `/api/trips/${route.params.id}`);

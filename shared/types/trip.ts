@@ -5,6 +5,7 @@ export interface CountryOption {
 
 export interface Trip {
   id: string;
+  ownerId: string;
   name: string;
   description: string;
   country: CountryOption | null;
