@@ -8,10 +8,7 @@
       class="cursor-pointer border-dashed flex items-center justify-center min-h-24 hover:ring-2 hover:ring-primary/50 transition"
     >
       <div class="flex items-center gap-2 text-primary">
-        <UIcon
-          name="i-lucide-plus"
-          class="text-lg"
-        />
+        <UIcon name="i-lucide-plus" class="text-lg" />
         <span class="text-sm font-medium">Добавить маршрут</span>
       </div>
     </UCard>
@@ -23,11 +20,7 @@
         class="space-y-5"
         @submit="onSubmit"
       >
-        <UFormField
-          label="Название путешествия"
-          name="name"
-          required
-        >
+        <UFormField label="Название путешествия" name="name" required>
           <UInput
             v-model="state.name"
             icon="i-lucide-map"
@@ -37,10 +30,7 @@
           />
         </UFormField>
 
-        <UFormField
-          label="Страна"
-          name="country"
-        >
+        <UFormField label="Страна" name="country">
           <SelectCountry v-model="state.country" />
         </UFormField>
 
@@ -61,7 +51,11 @@
 
 <script setup lang="ts">
 import type { FormError } from "@nuxt/ui";
-import type { CountryOption, CreateTripPayload, Trip } from "#shared/types/trip";
+import type {
+  CountryOption,
+  CreateTripPayload,
+  Trip,
+} from "#shared/types/trip";
 
 const toast = useToast();
 
@@ -86,7 +80,10 @@ async function onSubmit() {
       name: state.name,
       country: state.country ?? null,
     };
-    const trip = await $fetch<Trip>("/api/trips", { method: "POST", body: payload });
+    const trip = await $fetch<Trip>("/api/trips", {
+      method: "POST",
+      body: payload,
+    });
 
     isOpen.value = false;
     state.name = "";

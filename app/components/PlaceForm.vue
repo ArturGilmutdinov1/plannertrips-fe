@@ -1,25 +1,3 @@
-<script setup lang="ts">
-import * as z from "zod";
-import type { FormSubmitEvent } from "@nuxt/ui";
-
-// 1. Схема валидации
-const schema = z.object({});
-
-type Schema = z.output<typeof schema>;
-
-// 2. Реактивное состояние
-const state = reactive<Partial<Schema>>({
-  name: undefined,
-  img: undefined,
-  description: undefined,
-});
-
-// 3. Обработчик отправки
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data); // Валидированные данные
-}
-</script>
-
 <template>
   <UForm
     :schema="schema"
@@ -53,3 +31,25 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <UButton type="submit"> Сохранить </UButton>
   </UForm>
 </template>
+
+<script setup lang="ts">
+import * as z from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
+
+// 1. Схема валидации
+const schema = z.object({});
+
+type Schema = z.output<typeof schema>;
+
+// 2. Реактивное состояние
+const state = reactive<Partial<Schema>>({
+  name: undefined,
+  img: undefined,
+  description: undefined,
+});
+
+// 3. Обработчик отправки
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  console.log(event.data); // Валидированные данные
+}
+</script>

@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <UHeader class="border-b border-default/60 bg-default/80 backdrop-blur">
     <template #title>
@@ -27,3 +25,5 @@
     </template>
   </UHeader>
 </template>
+
+<script setup lang="ts"></script>

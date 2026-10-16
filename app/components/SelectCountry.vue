@@ -24,17 +24,25 @@ type CountrySource = {
 
 const selectedCountry = defineModel<CountryOption | undefined>();
 
-const { data: countries, status } = useFetch<CountrySource[]>("/api/locationSearch", {
-  key: "countries",
-  lazy: true,
-  server: false,
-  default: () => [],
-});
+const { data: countries, status } = useFetch<CountrySource[]>(
+  "/api/locationSearch",
+  {
+    key: "countries",
+    lazy: true,
+    server: false,
+    default: () => [],
+  },
+);
 
 const countryData = computed<CountryOption[]>(() =>
-  countries.value.flatMap(item =>
+  countries.value.flatMap((item) =>
     item.code
-      ? [{ label: item.translations?.ru || item.name || item.code, value: item.code }]
+      ? [
+          {
+            label: item.translations?.ru || item.name || item.code,
+            value: item.code,
+          },
+        ]
       : [],
   ),
 );

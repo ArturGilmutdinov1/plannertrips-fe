@@ -1,18 +1,12 @@
 <template>
   <div>
-    <h2 class="text-lg font-semibold mb-4">
-      Мои маршруты
-    </h2>
+    <h2 class="text-lg font-semibold mb-4">Мои маршруты</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <!-- Первая карточка — добавить -->
       <ModalCreateTrip />
 
       <!-- Остальные -->
-      <NuxtLink
-        v-for="trip in trips"
-        :key="trip.id"
-        :to="`/trips/${trip.id}`"
-      >
+      <NuxtLink v-for="trip in trips" :key="trip.id" :to="`/trips/${trip.id}`">
         <UCard class="h-full hover:ring-2 hover:ring-primary/50 transition">
           <h3 class="text-sm font-semibold">
             {{ trip.name }}

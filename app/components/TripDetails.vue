@@ -1,9 +1,6 @@
 <template>
   <UPage>
-    <UPageHeader
-      :title="pageTitle"
-      :description="pageDescription"
-    />
+    <UPageHeader :title="pageTitle" :description="pageDescription" />
 
     <UPageBody>
       <UCard class="border-dashed">
