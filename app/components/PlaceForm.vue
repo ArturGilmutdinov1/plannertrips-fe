@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-
+import type { CreatePlacePayload } from "#shared/types/place";
 // 1. Схема валидации
 const schema = z.object({});
 
@@ -50,6 +50,17 @@ const state = reactive<Partial<Schema>>({
 
 // 3. Обработчик отправки
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data); // Валидированные данные
+  try {
+    const data: CreatePlacePayload = {
+      name: state.name,
+      img: state.img,
+      description: state.description,
+    };
+
+    const place = await $fetch<Place>("/api/places", {
+      method: "POST",
+      body: data,
+    });
+  } catch {}
 }
 </script>

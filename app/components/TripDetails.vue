@@ -32,6 +32,19 @@
 import type { Trip } from "#shared/types/trip";
 
 const props = defineProps<{ trip: Trip }>();
+const id = props.trip.id;
+
+const {
+  data: places,
+  pending,
+  error,
+  refresh,
+} = await useFetch<Trip[]>("/api/places/${id}", {
+  key: "places",
+  default: () => [],
+});
+
+console.log(places.value, "data");
 
 const pageTitle = computed(() => props.trip.name || "Новый маршрут");
 const pageDescription = computed(() =>
