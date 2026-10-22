@@ -3,7 +3,7 @@
     <h2 class="text-lg font-semibold mb-4">Мои маршруты</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <!-- Первая карточка — добавить -->
-      <ModalCreateTrip />
+      <TripCreateModal />
 
       <!-- Остальные -->
       <NuxtLink v-for="trip in trips" :key="trip.id" :to="`/trips/${trip.id}`">

@@ -8,7 +8,7 @@
         v-if="places.length"
         #links
       >
-        <AddTripDetailCard :trip-id="trip.id" />
+        <PlaceAddButton :trip-id="trip.id" />
       </template>
     </UPageHeader>
 
@@ -74,7 +74,7 @@
               Добавьте первые места поездки
             </p>
           </div>
-          <AddTripDetailCard :trip-id="trip.id" />
+          <PlaceAddButton :trip-id="trip.id" />
         </div>
       </UCard>
     </UPageBody>

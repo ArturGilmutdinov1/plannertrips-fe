@@ -31,7 +31,7 @@
         </UFormField>
 
         <UFormField label="Страна" name="country">
-          <SelectCountry v-model="state.country" />
+          <CountrySelect v-model="state.country" />
         </UFormField>
 
         <div class="flex justify-end pt-2">

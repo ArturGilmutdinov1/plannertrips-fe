@@ -2,7 +2,7 @@
   <div>
     <PopularCountriesCarousel />
 
-    <MyTripsCardGrid v-if="auth.isLoggedIn" />
+    <TripGrid v-if="auth.isLoggedIn" />
 
     <UPageCTA
       v-else
