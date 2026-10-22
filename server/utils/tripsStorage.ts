@@ -28,6 +28,14 @@ export async function getUserTrips(userId: string): Promise<Trip[]> {
   return (await getAllTrips()).filter(trip => trip.ownerId === userId);
 }
 
+export async function requireUserTrip(userId: string, tripId: string | undefined): Promise<Trip> {
+  const trip = (await getUserTrips(userId)).find(item => item.id === tripId);
+  if (!trip) {
+    throw createError({ statusCode: 404, message: "Поездка не найдена" });
+  }
+  return trip;
+}
+
 export async function addTrip(trip: Trip) {
   const trips = await getAllTrips();
   await useStorage("data").setItem(KEY, [...trips, trip]);

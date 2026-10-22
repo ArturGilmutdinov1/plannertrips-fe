@@ -3,14 +3,10 @@
     icon="i-lucide-plus"
     label="Добавить место"
     variant="soft"
-    @click="onSubmit"
+    :to="`/trips/${tripId}/places/new`"
   />
 </template>
 
 <script setup lang="ts">
-function onSubmit() {
-  navigateTo({
-    path: "/trips/items/1",
-  });
-}
+defineProps<{ tripId: string }>();
 </script>

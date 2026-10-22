@@ -1,9 +1,62 @@
 <template>
   <UPage>
-    <UPageHeader :title="pageTitle" :description="pageDescription" />
+    <UPageHeader
+      :title="pageTitle"
+      :description="pageDescription"
+    >
+      <template
+        v-if="places.length"
+        #links
+      >
+        <AddTripDetailCard :trip-id="trip.id" />
+      </template>
+    </UPageHeader>
 
     <UPageBody>
-      <UCard class="border-dashed">
+      <div
+        v-if="places.length"
+        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <UCard
+          v-for="place in places"
+          :key="place.id"
+        >
+          <template
+            v-if="place.img"
+            #header
+          >
+            <img
+              :src="place.img"
+              :alt="place.name"
+              class="h-40 w-full rounded-md object-cover"
+            >
+          </template>
+
+          <div class="space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <h3 class="font-semibold text-highlighted">
+                {{ place.name }}
+              </h3>
+              <UBadge
+                v-if="place.category"
+                :label="PLACE_CATEGORY_LABELS[place.category]"
+                variant="subtle"
+              />
+            </div>
+            <p
+              v-if="place.description"
+              class="text-sm text-muted"
+            >
+              {{ place.description }}
+            </p>
+          </div>
+        </UCard>
+      </div>
+
+      <UCard
+        v-else
+        class="border-dashed"
+      >
         <div
           class="flex flex-col items-center justify-center gap-4 py-12 text-center min-h-[400px]"
         >
@@ -21,7 +74,7 @@
               Добавьте первые места поездки
             </p>
           </div>
-          <AddTripDetailCard />
+          <AddTripDetailCard :trip-id="trip.id" />
         </div>
       </UCard>
     </UPageBody>
@@ -29,22 +82,15 @@
 </template>
 
 <script setup lang="ts">
+import type { Place } from "#shared/types/place";
 import type { Trip } from "#shared/types/trip";
+import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
 
 const props = defineProps<{ trip: Trip }>();
-const id = props.trip.id;
 
-const {
-  data: places,
-  pending,
-  error,
-  refresh,
-} = await useFetch<Trip[]>("/api/places/${id}", {
-  key: "places",
+const { data: places } = await useFetch<Place[]>(() => `/api/trips/${props.trip.id}/places`, {
   default: () => [],
 });
-
-console.log(places.value, "data");
 
 const pageTitle = computed(() => props.trip.name || "Новый маршрут");
 const pageDescription = computed(() =>
