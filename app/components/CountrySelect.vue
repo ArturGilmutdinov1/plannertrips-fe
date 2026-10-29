@@ -1,7 +1,7 @@
 <template>
   <USelectMenu
     v-model="selectedCountry"
-    :items="countryData"
+    :items="countries"
     name="country"
     icon="i-lucide-globe-2"
     placeholder="Выберите страну"
@@ -14,36 +14,12 @@
 <script setup lang="ts">
 import type { CountryOption } from "#shared/types/trip";
 
-type CountrySource = {
-  code?: string;
-  name?: string;
-  translations?: {
-    ru?: string;
-  };
-};
-
 const selectedCountry = defineModel<CountryOption | undefined>();
 
-const { data: countries, status } = useFetch<CountrySource[]>(
-  "/api/locationSearch",
-  {
-    key: "countries",
-    lazy: true,
-    server: false,
-    default: () => [],
-  },
-);
-
-const countryData = computed<CountryOption[]>(() =>
-  countries.value.flatMap((item) =>
-    item.code
-      ? [
-          {
-            label: item.translations?.ru || item.name || item.code,
-            value: item.code,
-          },
-        ]
-      : [],
-  ),
-);
+const { data: countries, status } = useFetch<CountryOption[]>("/api/countries", {
+  key: "countries",
+  lazy: true,
+  server: false,
+  default: () => [],
+});
 </script>
