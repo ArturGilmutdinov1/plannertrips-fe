@@ -4,11 +4,12 @@
       :title="pageTitle"
       :description="pageDescription"
     >
-      <template
-        v-if="places.length"
-        #links
-      >
-        <PlaceAddButton :trip-id="trip.id" />
+      <template #links>
+        <MapForTrip />
+        <PlaceAddButton
+          v-if="places.length"
+          :trip-id="trip.id"
+        />
       </template>
     </UPageHeader>
 
@@ -85,6 +86,7 @@
 import type { Place } from "#shared/types/place";
 import type { Trip } from "#shared/types/trip";
 import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
+import MapForTrip from "./maps/MapForTrip.vue";
 
 const props = defineProps<{ trip: Trip }>();
 
