@@ -1,64 +1,151 @@
-# Nuxt Starter Template
+# PlannerTrips
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+Планировщик путешествий: создаёте поездку, указываете страну и собираете в неё места — достопримечательности, музеи, еду, жильё.
 
-Use this template to get started with [Nuxt UI](https://ui.nuxt.com) quickly.
+Сейчас это фронтенд на Nuxt 4 с временным мок-сервером в `server/`. Позже появится отдельный бэкенд, а Nuxt-сервер станет прослойкой между браузером и ним (см. [Архитектура](#архитектура)).
 
-- [Live demo](https://starter-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+## Что уже работает
 
-<a href="https://starter-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-    <img alt="Nuxt Starter Template" src="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png" width="830" height="466">
-  </picture>
-</a>
+- **Авторизация** — регистрация, вход, выход. Сессия живёт в httpOnly-cookie `pt_session` (7 дней), пароли хэшируются PBKDF2. Страницы поездок закрыты middleware `auth`, страницы входа и регистрации — middleware `guest`. После входа пользователь возвращается на страницу из `?redirect=` (принимаются только локальные пути).
+- **Поездки** — список на главной, создание в модалке (название и страна), страница поездки. Каждый пользователь видит только свои поездки.
+- **Места** — добавление места в поездку: название, категория, описание и картинка. Пока нет файлового хранилища, картинка сохраняется как data URL.
+- **Справочники** — страны (из `@innovayse/geo-atlas`, названия на русском) и поиск городов с координатами по базе GeoNames (`/api/cities`; в интерфейсе пока не используется).
 
-> The starter template for Vue is on https://github.com/nuxt-ui-templates/starter-vue.
+## Стек
 
-## Quick Start
+- [Nuxt 4](https://nuxt.com) + Vue 3, TypeScript
+- [Nuxt UI 4](https://ui.nuxt.com) + Tailwind CSS 4
+- [Pinia](https://pinia.vuejs.org) — состояние авторизации
+- [Zod](https://zod.dev) — валидация форм
+- [@nuxtjs/leaflet](https://leaflet.nuxtjs.org) — подключён под будущую карту, пока не используется
+- Nitro storage — хранилище данных мок-сервера
 
-```bash [Terminal]
-npm create nuxt@latest -- -t ui
-```
+## Быстрый старт
 
-## Deploy your own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
-
-## Setup
-
-Make sure to install the dependencies:
+Нужны Node.js 22+ и pnpm (версия зафиксирована в `packageManager` в `package.json`, проще всего включить через `corepack enable`).
 
 ```bash
 pnpm install
+pnpm dev        # http://localhost:3000
 ```
 
-## Development Server
+Демо-аккаунт создаётся автоматически при первом обращении к API:
 
-Start the development server on `http://localhost:3000`:
+| Email                  | Пароль     |
+| ---------------------- | ---------- |
+| `demo@plannertrips.ru` | `demo1234` |
 
-```bash
-pnpm dev
+У него уже есть несколько поездок («Рим на 3 дня», «Алтай», «Байкал» и другие).
+
+### Скрипты
+
+| Команда          | Что делает                         |
+| ---------------- | ---------------------------------- |
+| `pnpm dev`       | dev-сервер с HMR                   |
+| `pnpm build`     | продакшен-сборка                   |
+| `pnpm preview`   | локальный запуск продакшен-сборки  |
+| `pnpm lint`      | ESLint                             |
+| `pnpm typecheck` | проверка типов через `vue-tsc`     |
+
+CI (`.github/workflows/ci.yml`) на каждый push запускает `lint` и `typecheck`.
+
+### Данные мок-сервера
+
+В dev-режиме Nitro пишет данные в `.data/kv/`, поэтому пользователи, сессии, поездки и места переживают перезапуск. Чтобы вернуться к исходным данным, удалите эту папку.
+
+## Структура
+
+```
+app/
+  components/   UI: шапка, сетка поездок, модалка создания, форма места, выбор страны
+  pages/        /, /login, /register, /trips/:id, /trips/:id/places/new
+  middleware/   auth (только для вошедших), guest (только для гостей)
+  plugins/      auth.ts — один раз загружает текущего пользователя (при SSR)
+  stores/       auth.ts — Pinia-стор пользователя
+  composables/  useAuthRedirect — безопасный ?redirect после входа
+  api/          заготовка под клиент к API (пока пусто)
+server/
+  api/          HTTP-эндпоинты (контракт для фронтенда)
+  utils/        мок-реализация: auth, хранилища поездок и мест, поиск городов
+  assets/       cities.json — справочник городов, только в серверной сборке
+shared/
+  types/        типы, общие для app и server: User, Trip, Place, City
+  utils/        валидация авторизации, категории мест
+scripts/
+  build-cities.mjs — сборка cities.json из дампов GeoNames
 ```
 
-## Production
+Типы из `shared/` импортируются через алиас `#shared/...` и на клиенте, и на сервере, так что контракт API описан в одном месте.
 
-Build the application for production:
+## API
 
-```bash
-pnpm build
+Все эндпоинты, кроме авторизации и справочников, требуют сессию; без неё отвечают `401`. Чужая или несуществующая поездка — `404`.
+
+| Метод  | Путь                      | Описание                                                    |
+| ------ | ------------------------- | ----------------------------------------------------------- |
+| `POST` | `/api/auth/register`      | регистрация `{ name, email, password }`, сразу создаёт сессию |
+| `POST` | `/api/auth/login`         | вход `{ email, password }`                                   |
+| `POST` | `/api/auth/logout`        | выход, удаляет сессию и cookie                               |
+| `GET`  | `/api/auth/me`            | текущий пользователь или `{ user: null }`                    |
+| `GET`  | `/api/trips`              | поездки текущего пользователя                                |
+| `POST` | `/api/trips`              | создать поездку `{ name, country }`                          |
+| `GET`  | `/api/trips/:id`          | поездка                                                      |
+| `GET`  | `/api/trips/:id/places`   | места поездки                                                |
+| `POST` | `/api/trips/:id/places`   | добавить место `{ name, category, description, img }`        |
+| `GET`  | `/api/countries`          | список стран `{ label, value }`, `value` — ISO 3166-1 alpha-2 |
+| `GET`  | `/api/cities`             | поиск городов: `?q=рим&country=IT&limit=20`                  |
+
+`/api/cities` ищет по началу любого слова в русском и английском названии («петер» найдёт «Санкт-Петербург»), `ё` и `е` не различаются. Нужен либо `country`, либо `q` от двух символов; `limit` — до 50. Результаты отсортированы по населению, у каждого города есть `lat`/`lng`.
+
+Категории мест: `sight`, `museum`, `nature`, `food`, `stay`, `other` (см. `shared/utils/placeCategories.ts`).
+
+## Архитектура
+
+```
+браузер ──► Nuxt (SSR + server/api) ──► отдельный бэкенд
+                    ▲
+                    └── сейчас вместо бэкенда — мок в server/utils
 ```
 
-Locally preview production build:
+Браузер ходит только в `/api/*` своего же Nuxt-приложения. Сейчас обработчики в `server/api/` работают с мок-хранилищами из `server/utils/`. Когда появится отдельный бэкенд, Nuxt-сервер останется прослойкой (BFF):
 
-```bash
-pnpm preview
-```
+- **контракт не меняется** — пути `/api/*` и типы из `shared/types` остаются, страницы и компоненты переписывать не нужно;
+- **меняется реализация** — функции в `server/utils/` (`requireUser`, `getUserTrips`, `addPlace` и т. д.) вместо Nitro storage будут вызывать бэкенд через `$fetch`; адрес бэкенда уйдёт в `runtimeConfig` (например, `NUXT_API_BASE_URL`), чтобы не хардкодить его;
+- **сессия остаётся на стороне Nuxt** — браузер по-прежнему получает только httpOnly-cookie, а токен бэкенда Nuxt-сервер хранит у себя и сам подставляет в запросы. Так токен не попадает в JavaScript страницы;
+- **CORS не нужен** — браузер не обращается к бэкенду напрямую.
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Поэтому мок-слой сделан намеренно простым: вкладываться стоит в типы и UI, а не во внутренности `server/utils/`.
 
-## Renovate integration
+## Планы
 
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+### Отдельный бэкенд
+
+- [ ] Бэкенд с БД вместо Nitro storage
+- [ ] Перевести `server/utils/` на запросы к бэкенду, адрес — через `runtimeConfig`
+- [ ] Файловое хранилище для картинок мест вместо data URL
+- [ ] Редактирование и удаление поездок и мест
+
+### Картография
+
+Leaflet уже подключён (`@nuxtjs/leaflet`), а `/api/cities` отдаёт координаты — основа для карты есть.
+
+- [ ] Координаты у места: `lat`/`lng` в `Place` и `CreatePlacePayload`
+- [ ] Выбор точки при создании места — поиском по `/api/cities` или кликом по карте
+- [ ] Карта поездки с маркерами мест, цвет или иконка маркера — по категории
+- [ ] Центрирование карты по стране поездки
+- [ ] Маршрут по дням: порядок мест и линия между ними
+
+Leaflet работает только в браузере, поэтому карту нужно рендерить на клиенте (`<ClientOnly>`). Тайлы OpenStreetMap требуют атрибуции на карте.
+
+### Прочее
+
+- [ ] Страница `/destinations` — на неё уже ведёт ссылка «Показать все» в карусели популярных направлений
+- [ ] Наполнить карусель реальными данными вместо заглушек
+
+## Справочник городов
+
+`server/assets/cities.json` собран из дампов [GeoNames](https://www.geonames.org) (лицензия [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)): все города с населением от 15 000 человек, с русскими названиями там, где они есть. Файл коммитится в репозиторий и не попадает в клиентский бандл. Как пересобрать — в шапке `scripts/build-cities.mjs`.
+
+## Лицензия
+
+[MIT](LICENSE)
