@@ -1,8 +1,5 @@
 <template>
-  <TripDetails
-    v-if="trip"
-    :trip="trip"
-  />
+  <TripDetails v-if="trip" :trip="trip" />
 </template>
 
 <script setup lang="ts">
@@ -12,12 +9,16 @@ definePageMeta({ middleware: "auth" });
 
 const route = useRoute();
 
-const { data: trip, error } = await useFetch<Trip>(() => `/api/trips/${route.params.id}`);
+const { data: trip, error } = await useFetch<Trip>(
+  () => `/api/trips/${route.params.id}`,
+);
 
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode ?? 500,
-    message: (error.value.data as { message?: string } | undefined)?.message ?? error.value.message,
+    message:
+      (error.value.data as { message?: string } | undefined)?.message ??
+      error.value.message,
     fatal: true,
   });
 }
