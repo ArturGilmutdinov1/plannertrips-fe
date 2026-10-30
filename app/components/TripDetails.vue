@@ -1,9 +1,15 @@
 <template>
   <UPage>
-    <UPageHeader :title="pageTitle" :description="pageDescription">
+    <UPageHeader
+      :title="pageTitle"
+      :description="pageDescription"
+    >
       <template #links>
         <MapForTrip />
-        <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
+        <PlaceAddButton
+          v-if="places.length"
+          :trip-id="trip.id"
+        />
       </template>
     </UPageHeader>
 
@@ -25,12 +31,15 @@
                 :src="place.img"
                 :alt="place.name"
                 class="h-40 w-full rounded-md object-cover"
-              />
+              >
               <div
                 v-else
                 class="flex h-40 w-full items-center justify-center rounded-md bg-elevated"
               >
-                <UIcon name="i-lucide-image" class="size-10 text-dimmed" />
+                <UIcon
+                  name="i-lucide-image"
+                  class="size-10 text-dimmed"
+                />
               </div>
             </template>
 
@@ -46,14 +55,20 @@
                   class="shrink-0"
                 />
               </div>
-              <p v-if="place.description" class="line-clamp-2 text-sm text-muted">
+              <p
+                v-if="place.description"
+                class="line-clamp-2 text-sm text-muted"
+              >
                 {{ place.description }}
               </p>
             </div>
           </UCard>
         </NuxtLink>
       </div>
-      <UCard v-else class="border-dashed">
+      <UCard
+        v-else
+        class="border-dashed"
+      >
         <div
           class="flex flex-col items-center justify-center gap-4 py-12 text-center min-h-[400px]"
         >

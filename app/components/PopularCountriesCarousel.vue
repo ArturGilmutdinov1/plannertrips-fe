@@ -1,6 +1,8 @@
 <template>
   <div class="mb-8">
-    <h2 class="text-lg font-semibold mb-4">Популярные направления</h2>
+    <h2 class="text-lg font-semibold mb-4">
+      Популярные направления
+    </h2>
     <UButton
       to="/destinations"
       variant="link"
