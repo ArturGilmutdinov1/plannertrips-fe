@@ -1,9 +1,6 @@
 export default defineEventHandler(async (event) => {
-  // 1. Достаем значения
-  const tripId = getRouterParam(event, "id");
-  const placeId = getRouterParam(event, "placeId");
+  const user = await requireUser(event);
+  const trip = await requireUserTrip(user.id, getRouterParam(event, "id"));
 
-  const result = await requiredPlace(tripId, placeId);
-
-  return result;
+  return requirePlace(trip.id, getRouterParam(event, "placeId"));
 });
