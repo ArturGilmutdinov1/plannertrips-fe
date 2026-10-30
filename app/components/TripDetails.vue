@@ -17,27 +17,36 @@
           :key="place.id"
           :to="`/trips/${trip.id}/places/${place.id}`"
         >
-          <UCard class="h-full hover:ring-2 hover:ring-primary/50 transition">
-            <template v-if="place.img" #header>
+          <UCard class="h-80 overflow-hidden hover:ring-2 hover:ring-primary/50 transition">
+            <!-- Шапка есть всегда, чтобы карточки с картинкой и без были одной высоты -->
+            <template #header>
               <img
+                v-if="place.img"
                 :src="place.img"
                 :alt="place.name"
                 class="h-40 w-full rounded-md object-cover"
               />
+              <div
+                v-else
+                class="flex h-40 w-full items-center justify-center rounded-md bg-elevated"
+              >
+                <UIcon name="i-lucide-image" class="size-10 text-dimmed" />
+              </div>
             </template>
 
             <div class="space-y-2">
               <div class="flex items-start justify-between gap-2">
-                <h3 class="font-semibold text-highlighted">
+                <h3 class="min-w-0 truncate font-semibold text-highlighted">
                   {{ place.name }}
                 </h3>
                 <UBadge
                   v-if="place.category"
                   :label="PLACE_CATEGORY_LABELS[place.category]"
                   variant="subtle"
+                  class="shrink-0"
                 />
               </div>
-              <p v-if="place.description" class="text-sm text-muted">
+              <p v-if="place.description" class="line-clamp-2 text-sm text-muted">
                 {{ place.description }}
               </p>
             </div>
