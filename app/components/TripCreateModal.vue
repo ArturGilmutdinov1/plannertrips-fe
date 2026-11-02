@@ -8,7 +8,10 @@
       class="cursor-pointer border-dashed flex items-center justify-center min-h-24 hover:ring-2 hover:ring-primary/50 transition"
     >
       <div class="flex items-center gap-2 text-primary">
-        <UIcon name="i-lucide-plus" class="text-lg" />
+        <UIcon
+          name="i-lucide-plus"
+          class="text-lg"
+        />
         <span class="text-sm font-medium">Добавить маршрут</span>
       </div>
     </UCard>
@@ -20,7 +23,11 @@
         class="space-y-5"
         @submit="onSubmit"
       >
-        <UFormField label="Название путешествия" name="name" required>
+        <UFormField
+          label="Название путешествия"
+          name="name"
+          required
+        >
           <UInput
             v-model="state.name"
             icon="i-lucide-map"
@@ -30,7 +37,10 @@
           />
         </UFormField>
 
-        <UFormField label="Страна" name="country">
+        <UFormField
+          label="Страна"
+          name="country"
+        >
           <CountrySelect v-model="state.country" />
         </UFormField>
 

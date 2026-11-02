@@ -1,5 +1,8 @@
 <template>
-  <TripDetails v-if="trip" :trip="trip" />
+  <TripDetails
+    v-if="trip"
+    :trip="trip"
+  />
 </template>
 
 <script setup lang="ts">
@@ -17,8 +20,8 @@ if (error.value) {
   throw createError({
     statusCode: error.value.statusCode ?? 500,
     message:
-      (error.value.data as { message?: string } | undefined)?.message ??
-      error.value.message,
+      (error.value.data as { message?: string } | undefined)?.message
+      ?? error.value.message,
     fatal: true,
   });
 }

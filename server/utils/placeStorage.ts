@@ -12,7 +12,7 @@ const seed: Place[] = [
     category: "sight" as const,
     description: "Лучше прийти к открытию",
   },
-].map((place) => ({
+].map(place => ({
   ...place,
   ownerId: DEMO_USER_ID,
   img: null,
@@ -30,15 +30,15 @@ async function getAllPlaces(): Promise<Place[]> {
 }
 
 export async function getTripPlaces(tripId: string): Promise<Place[]> {
-  return (await getAllPlaces()).filter((place) => place.tripId === tripId);
+  return (await getAllPlaces()).filter(place => place.tripId === tripId);
 }
 
-export async function requiredPlace(
+export async function requirePlace(
   tripId: string,
-  placeId: string,
+  placeId: string | undefined,
 ): Promise<Place> {
   const place = (await getTripPlaces(tripId)).find(
-    (item) => item.id === placeId,
+    item => item.id === placeId,
   );
   if (!place) {
     throw createError({ statusCode: 404, message: "Локация не найдена" });

@@ -1,13 +1,19 @@
 <template>
-  <div class="max-w-4xl mx-auto p-4 sm:p-6">
+  <div
+    v-if="place"
+    class="max-w-4xl mx-auto p-4 sm:p-6"
+  >
     <UCard class="overflow-hidden">
       <!-- Блок с картинкой (если она есть) -->
-      <template v-if="place.img" #header>
+      <template
+        v-if="place.img"
+        #header
+      >
         <img
           :src="place.img"
           :alt="place.name"
           class="h-64 sm:h-96 w-full object-cover"
-        />
+        >
       </template>
 
       <!-- Основной контент -->
@@ -22,7 +28,7 @@
 
           <UBadge
             v-if="place.category"
-            :label="place.category"
+            :label="PLACE_CATEGORY_LABELS[place.category]"
             variant="subtle"
             size="lg"
             class="shrink-0"
@@ -42,14 +48,19 @@
 
 <script setup lang="ts">
 import type { Place } from "#shared/types/place";
+import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
 
 const route = useRoute();
-const tripId = computed(() => route.params.id);
-const placeId = computed(() => route.params.placeId);
 
 const { data: place, error } = await useFetch<Place>(
-  () => `/api/trips/${tripId.value}/places/${placeId.value}`,
+  () => `/api/trips/${route.params.id}/places/${route.params.placeId}`,
 );
 
-console.log("place.value", place.value);
+if (error.value) {
+  throw createError({
+    statusCode: error.value.statusCode ?? 500,
+    message: getErrorMessage(error.value, error.value.message),
+    fatal: true,
+  });
+}
 </script>
