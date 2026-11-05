@@ -12,7 +12,7 @@ const seed: Place[] = [
     category: "sight" as const,
     description: "Лучше прийти к открытию",
   },
-].map(place => ({
+].map((place) => ({
   ...place,
   ownerId: DEMO_USER_ID,
   img: null,
@@ -30,7 +30,7 @@ async function getAllPlaces(): Promise<Place[]> {
 }
 
 export async function getTripPlaces(tripId: string): Promise<Place[]> {
-  return (await getAllPlaces()).filter(place => place.tripId === tripId);
+  return (await getAllPlaces()).filter((place) => place.tripId === tripId);
 }
 
 export async function requirePlace(
@@ -38,7 +38,7 @@ export async function requirePlace(
   placeId: string | undefined,
 ): Promise<Place> {
   const place = (await getTripPlaces(tripId)).find(
-    item => item.id === placeId,
+    (item) => item.id === placeId,
   );
   if (!place) {
     throw createError({ statusCode: 404, message: "Локация не найдена" });
@@ -49,4 +49,21 @@ export async function requirePlace(
 export async function addPlace(place: Place) {
   const places = await getAllPlaces();
   await useStorage("data").setItem(KEY, [...places, place]);
+}
+
+export async function removePlace(
+  tripId: string,
+  placeId: string,
+): Promise<void> {
+  const places = await getAllPlaces();
+  const exists = places.some(
+    (place) => place.id === placeId && place.tripId === tripId,
+  );
+  if (!exists) {
+    throw createError({ statusCode: 404, message: "Локация не найдена" });
+  }
+  const filtered = places.filter(
+    (place) => !(place.id === placeId && place.tripId === tripId),
+  );
+  await useStorage("data").setItem(KEY, filtered);
 }
