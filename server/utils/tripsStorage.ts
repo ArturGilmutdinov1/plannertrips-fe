@@ -75,3 +75,13 @@ export async function addTrip(trip: Trip) {
   const trips = await getAllTrips();
   await useStorage("data").setItem(KEY, [...trips, trip]);
 }
+
+export async function removeTrip(tripId: string): Promise<void> {
+  const trips = await getAllTrips();
+  const exists = trips.some((trip) => trip.id === tripId);
+  if (!exists) {
+    throw createError({ statusCode: 404, message: "Маршрут не найден" });
+  }
+  const filtered = trips.filter((trip) => !(trip.id === tripId));
+  await useStorage("data").setItem(KEY, filtered);
+}

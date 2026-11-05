@@ -4,6 +4,29 @@
       <template #links>
         <MapForTrip />
         <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
+        <UDropdownMenu
+          :items="[
+            {
+              label: 'Редактировать',
+              icon: 'i-lucide-pencil',
+              onSelect: editTrip,
+            },
+            { type: 'separator' },
+            {
+              label: 'Удалить',
+              icon: 'i-lucide-trash-2',
+              color: 'error',
+              onSelect: removeTrip,
+            },
+          ]"
+        >
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-ellipsis-vertical"
+            aria-label="Действия"
+          />
+        </UDropdownMenu>
       </template>
     </UPageHeader>
 
@@ -90,6 +113,7 @@ import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
 import MapForTrip from "./maps/MapForTrip.vue";
 
 const props = defineProps<{ trip: Trip }>();
+const route = useRoute();
 
 const { data: places } = await useFetch<Place[]>(
   () => `/api/trips/${props.trip.id}/places`,
@@ -104,4 +128,21 @@ const pageDescription = computed(() =>
     ? `План поездки: ${props.trip.country.label}`
     : "Начните собирать маршрут по дням и местам",
 );
+
+async function removeTrip() {
+  const tripId = route.params.id as string;
+
+  try {
+    // 2. Отправляем запрос на удаление
+    await $fetch(`/api/trips/${tripId}`, {
+      method: "DELETE",
+    });
+
+    // 4. Переходим назад
+    await navigateTo(``);
+  } catch (error: any) {
+    // 5. Обрабатываем ошибки (например, 404 или 500)
+    console.error("Ошибка при удалении:", error);
+  }
+}
 </script>
