@@ -5,6 +5,8 @@ export default defineEventHandler(async (event) => {
   const tripData = await readBody<Partial<UpdateTripPoyload>>(event);
   const tripId = getRouterParam(event, "id");
 
+  await requireUserTrip(user.id, tripId);
+
   if (!tripId) {
     throw createError({
       statusCode: 400,
