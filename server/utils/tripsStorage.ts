@@ -85,3 +85,23 @@ export async function removeTrip(tripId: string): Promise<void> {
   const filtered = trips.filter((trip) => !(trip.id === tripId));
   await useStorage("data").setItem(KEY, filtered);
 }
+
+export async function updateTrip(
+  tripId: string,
+  tripData: { name: string; country: {} },
+) {
+  const trips = await getAllTrips();
+  const nextStateTrips = trips.map((trip) => {
+    if (trip.id === tripId) {
+      return {
+        ...trip,
+        name: tripData.name,
+        country: tripData.country,
+      };
+    }
+    return trip;
+  });
+
+  await useStorage("data").setItem(KEY, nextStateTrips); // ← добавить запись
+  return nextStateTrips.find((trip) => trip.id === tripId); // ← вернуть обновлённую
+}

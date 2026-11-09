@@ -16,3 +16,8 @@ export interface CreateTripPayload {
   name: string;
   country: CountryOption | null;
 }
+
+export interface UpdateTripPoyload {
+  name: string;
+  country: CountryOption | null;
+}

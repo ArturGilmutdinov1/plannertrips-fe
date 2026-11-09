@@ -1,34 +1,64 @@
 <template>
   <UPage>
-    <UPageHeader :title="pageTitle" :description="pageDescription">
-      <template #links>
-        <MapForTrip />
-        <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
-        <UDropdownMenu
-          :items="[
-            {
-              label: 'Редактировать',
-              icon: 'i-lucide-pencil',
-              onSelect: editTrip,
-            },
-            { type: 'separator' },
-            {
-              label: 'Удалить',
-              icon: 'i-lucide-trash-2',
-              color: 'error',
-              onSelect: removeTrip,
-            },
-          ]"
-        >
-          <UButton
-            color="neutral"
-            variant="ghost"
-            icon="i-lucide-ellipsis-vertical"
-            aria-label="Действия"
-          />
-        </UDropdownMenu>
-      </template>
-    </UPageHeader>
+    <template v-if="!isEditing">
+      <UPageHeader
+        v-if="!isEditing"
+        :title="pageTitle"
+        :description="pageDescription"
+      >
+        <template #links>
+          <MapForTrip />
+          <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
+          <UDropdownMenu
+            :items="[
+              {
+                label: 'Редактировать',
+                icon: 'i-lucide-pencil',
+                onSelect: editTrip,
+              },
+              { type: 'separator' },
+              {
+                label: 'Удалить',
+                icon: 'i-lucide-trash-2',
+                color: 'error',
+                onSelect: removeTrip,
+              },
+            ]"
+          >
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-lucide-ellipsis-vertical"
+              aria-label="Действия"
+            />
+          </UDropdownMenu>
+        </template>
+      </UPageHeader>
+    </template>
+    <!-- Режим редактирования -->
+    <div v-else class="flex w-full items-center gap-2">
+      <UInput
+        v-model="draftTitle"
+        class="w-full"
+        autofocus
+        @keyup.enter="saveTitle"
+        @keyup.esc="cancelEdit"
+      />
+      <CountrySelect v-model="draftCountry" />
+      <UButton
+        icon="i-lucide-check"
+        color="primary"
+        aria-label="Сохранить"
+        @click="saveTitle"
+      />
+      <UButton
+        icon="i-lucide-x"
+        color="neutral"
+        variant="ghost"
+        aria-label="Отмена"
+        @click="cancelEdit"
+      />
+    </div>
 
     <UPageBody>
       <div
@@ -108,12 +138,15 @@
 
 <script setup lang="ts">
 import type { Place } from "#shared/types/place";
-import type { Trip } from "#shared/types/trip";
+import type { Trip, UpdateTripPoyload } from "#shared/types/trip";
 import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
 import MapForTrip from "./maps/MapForTrip.vue";
 
 const props = defineProps<{ trip: Trip }>();
 const route = useRoute();
+const propsCountry = ref(props.trip.country);
+const country = computed(() => propsCountry.value);
+const tripId = route.params.id as string;
 
 const { data: places } = await useFetch<Place[]>(
   () => `/api/trips/${props.trip.id}/places`,
@@ -122,27 +155,60 @@ const { data: places } = await useFetch<Place[]>(
   },
 );
 
-const pageTitle = computed(() => props.trip.name || "Новый маршрут");
+const isEditing = ref(false);
+
+const propsTitle = ref(props.trip.name);
+const pageTitle = computed(() => propsTitle.value || "Новый маршрут");
 const pageDescription = computed(() =>
   props.trip.country?.label
-    ? `План поездки: ${props.trip.country.label}`
+    ? `План поездки: ${country?.value.label}`
     : "Начните собирать маршрут по дням и местам",
 );
+const draftTitle = ref(pageTitle.value);
+const draftCountry = ref<CountryOption | undefined>(country.value);
+
+function editTrip() {
+  isEditing.value = true;
+}
 
 async function removeTrip() {
-  const tripId = route.params.id as string;
-
   try {
-    // 2. Отправляем запрос на удаление
+    //  Отправляем запрос на удаление
     await $fetch(`/api/trips/${tripId}`, {
       method: "DELETE",
     });
 
-    // 4. Переходим назад
+    // Переходим назад
     await navigateTo(``);
   } catch (error: any) {
-    // 5. Обрабатываем ошибки (например, 404 или 500)
+    //  Обрабатываем ошибки (например, 404 или 500)
     console.error("Ошибка при удалении:", error);
+  }
+}
+
+function cancelEdit() {
+  isEditing.value = false;
+}
+
+async function saveTitle() {
+  const payload: UpdateTripPoyload = {
+    name: draftTitle.value,
+    country: draftCountry.value ?? null,
+  };
+
+  try {
+    //Отправляем данные
+    const responce = await $fetch<UpdateTripPoyload>(`/api/trips/${tripId}`, {
+      method: "POST",
+      body: payload,
+    });
+
+    propsTitle.value = responce.name;
+    propsCountry.value = responce.country;
+    isEditing.value = false;
+  } catch (error: any) {
+    //  Обрабатываем ошибки (например, 404 или 500)
+    console.error("Ошибка при изменении:", error);
   }
 }
 </script>
