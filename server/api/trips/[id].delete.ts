@@ -9,5 +9,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  await requireUserTrip(user.id, tripId);
   return await removeTrip(tripId);
 });
