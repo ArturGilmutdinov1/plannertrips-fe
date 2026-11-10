@@ -9,6 +9,7 @@ export interface Trip {
   name: string;
   description: string;
   country: CountryOption | null;
+  childTripIds: string[];
   createdAt: string;
 }
 
@@ -16,3 +17,7 @@ export interface CreateTripPayload {
   name: string;
   country: CountryOption | null;
 }
+
+export type AddChildTripPayload =
+  | { childTripId: string }
+  | CreateTripPayload;

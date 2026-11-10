@@ -4,6 +4,10 @@
       <template #links>
         <MapForTrip />
         <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
+        <ChildTripAddButton
+          :trip-id="trip.id"
+          :child-trip-ids="childTrips.map((child) => child.id)"
+        />
         <UDropdownMenu
           :items="[
             {
@@ -31,6 +35,39 @@
     </UPageHeader>
 
     <UPageBody>
+      <section v-if="childTrips.length" class="space-y-3">
+        <h2 class="text-lg font-semibold">Подключённые маршруты</h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <UCard
+            v-for="child in childTrips"
+            :key="child.id"
+            class="hover:ring-2 hover:ring-primary/50 transition"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <NuxtLink :to="`/trips/${child.id}`" class="min-w-0 flex-1">
+                <h3 class="truncate font-semibold text-highlighted">
+                  {{ child.name }}
+                </h3>
+                <p class="mt-1 text-sm text-muted">
+                  {{
+                    child.description
+                      || child.country?.label
+                      || "Самостоятельный маршрут"
+                  }}
+                </p>
+              </NuxtLink>
+              <UButton
+                icon="i-lucide-unlink"
+                color="neutral"
+                variant="ghost"
+                aria-label="Отсоединить маршрут"
+                @click="detachChild(child.id)"
+              />
+            </div>
+          </UCard>
+        </div>
+      </section>
+
       <div
         v-if="places.length"
         class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
@@ -81,7 +118,7 @@
           </UCard>
         </NuxtLink>
       </div>
-      <UCard v-else class="border-dashed">
+      <UCard v-else-if="!childTrips.length" class="border-dashed">
         <div
           class="flex flex-col items-center justify-center gap-4 py-12 text-center min-h-[400px]"
         >
@@ -100,6 +137,10 @@
             </p>
           </div>
           <PlaceAddButton :trip-id="trip.id" />
+          <ChildTripAddButton
+            :trip-id="trip.id"
+            :child-trip-ids="[]"
+          />
         </div>
       </UCard>
     </UPageBody>
@@ -122,12 +163,27 @@ const { data: places } = await useFetch<Place[]>(
   },
 );
 
+const { data: childTrips } = await useFetch<Trip[]>(
+  () => `/api/trips/${props.trip.id}/children`,
+  {
+    key: `trip-children-${props.trip.id}`,
+    default: () => [],
+  },
+);
+
 const pageTitle = computed(() => props.trip.name || "Новый маршрут");
 const pageDescription = computed(() =>
   props.trip.country?.label
     ? `План поездки: ${props.trip.country.label}`
     : "Начните собирать маршрут по дням и местам",
 );
+
+async function detachChild(childId: string) {
+  await $fetch(`/api/trips/${props.trip.id}/children/${childId}`, {
+    method: "DELETE",
+  });
+  await refreshNuxtData(`trip-children-${props.trip.id}`);
+}
 
 async function removeTrip() {
   const tripId = route.params.id as string;

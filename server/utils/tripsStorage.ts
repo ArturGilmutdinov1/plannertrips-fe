@@ -38,6 +38,7 @@ const seed: Trip[] = [
 ].map((trip) => ({
   ...trip,
   ownerId: DEMO_USER_ID,
+  childTripIds: [],
   createdAt: new Date(0).toISOString(),
 }));
 
@@ -53,6 +54,7 @@ async function getAllTrips(): Promise<Trip[]> {
   return trips.map((trip) => ({
     ...trip,
     ownerId: trip.ownerId ?? DEMO_USER_ID,
+    childTripIds: trip.childTripIds ?? [],
   }));
 }
 
@@ -76,12 +78,115 @@ export async function addTrip(trip: Trip) {
   await useStorage("data").setItem(KEY, [...trips, trip]);
 }
 
+export async function getChildTrips(
+  userId: string,
+  parentTripId: string,
+): Promise<Trip[]> {
+  const trips = await getUserTrips(userId);
+  const parent = trips.find((trip) => trip.id === parentTripId);
+  if (!parent) return [];
+
+  const byId = new Map(trips.map((trip) => [trip.id, trip]));
+  return parent.childTripIds.flatMap((id) => {
+    const trip = byId.get(id);
+    return trip ? [trip] : [];
+  });
+}
+
+function reachesTrip(
+  tripsById: Map<string, Trip>,
+  startTripId: string,
+  targetTripId: string,
+): boolean {
+  const visited = new Set<string>();
+  const pending = [startTripId];
+
+  while (pending.length) {
+    const currentId = pending.pop()!;
+    if (currentId === targetTripId) return true;
+    if (visited.has(currentId)) continue;
+    visited.add(currentId);
+    pending.push(...(tripsById.get(currentId)?.childTripIds ?? []));
+  }
+
+  return false;
+}
+
+export async function attachChildTrip(
+  userId: string,
+  parentTripId: string,
+  childTripId: string,
+): Promise<void> {
+  const trips = await getAllTrips();
+  const parent = trips.find(
+    (trip) => trip.id === parentTripId && trip.ownerId === userId,
+  );
+  const child = trips.find(
+    (trip) => trip.id === childTripId && trip.ownerId === userId,
+  );
+
+  if (!parent || !child) {
+    throw createError({ statusCode: 404, message: "Маршрут не найден" });
+  }
+  if (parent.id === child.id) {
+    throw createError({
+      statusCode: 400,
+      message: "Нельзя вложить маршрут в самого себя",
+    });
+  }
+  if (parent.childTripIds.includes(child.id)) return;
+
+  const tripsById = new Map(trips.map((trip) => [trip.id, trip]));
+  if (reachesTrip(tripsById, child.id, parent.id)) {
+    throw createError({
+      statusCode: 400,
+      message: "Связь создаёт цикл маршрутов",
+    });
+  }
+
+  const updated = trips.map((trip) =>
+    trip.id === parent.id
+      ? { ...trip, childTripIds: [...trip.childTripIds, child.id] }
+      : trip,
+  );
+  await useStorage("data").setItem(KEY, updated);
+}
+
+export async function detachChildTrip(
+  userId: string,
+  parentTripId: string,
+  childTripId: string,
+): Promise<void> {
+  const trips = await getAllTrips();
+  const parent = trips.find(
+    (trip) => trip.id === parentTripId && trip.ownerId === userId,
+  );
+  if (!parent) {
+    throw createError({ statusCode: 404, message: "Маршрут не найден" });
+  }
+
+  const updated = trips.map((trip) =>
+    trip.id === parent.id
+      ? {
+          ...trip,
+          childTripIds: trip.childTripIds.filter((id) => id !== childTripId),
+        }
+      : trip,
+  );
+  await useStorage("data").setItem(KEY, updated);
+}
+
 export async function removeTrip(tripId: string): Promise<void> {
   const trips = await getAllTrips();
   const exists = trips.some((trip) => trip.id === tripId);
   if (!exists) {
     throw createError({ statusCode: 404, message: "Маршрут не найден" });
   }
-  const filtered = trips.filter((trip) => !(trip.id === tripId));
+  const filtered = trips
+    .filter((trip) => trip.id !== tripId)
+    .map((trip) => ({
+      ...trip,
+      childTripIds: trip.childTripIds.filter((id) => id !== tripId),
+    }));
   await useStorage("data").setItem(KEY, filtered);
 }
