@@ -1,9 +1,9 @@
 <template>
   <UButton
     icon="i-lucide-plus"
-    label="Добавить место"
     variant="soft"
     :to="`/trips/${tripId}/places/new`"
+    aria-label="Добавить место"
   />
 </template>
 

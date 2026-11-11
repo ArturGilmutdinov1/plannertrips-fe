@@ -82,5 +82,31 @@
 }
 
 :root {
-  
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body,
+#__nuxt {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
 }
