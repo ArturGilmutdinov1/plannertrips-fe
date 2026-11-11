@@ -2,10 +2,10 @@
   <UForm
     :schema="schema"
     :state="state"
-    class="mx-auto w-full max-w-md space-y-4"
+    class="mx-auto w-full max-w-2xl space-y-4"
     @submit="onSubmit"
   >
-    <div class="flex items-start gap-4">
+    <div class="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start">
       <!-- левая колонка: два поля столбиком -->
       <div class="flex-1 space-y-4">
         <UFormField
@@ -32,7 +32,7 @@
       <UFileUpload
         v-model="state.img"
         accept="image/*"
-        class="w-40 min-h-30 shrink-0"
+        class="min-h-36 w-full shrink-0 sm:min-h-30 sm:w-40"
       />
     </div>
     <UFormField
@@ -49,6 +49,7 @@
     <UButton
       type="submit"
       :loading="isSubmitting"
+      class="w-full justify-center sm:w-auto"
     >
       Сохранить
     </UButton>

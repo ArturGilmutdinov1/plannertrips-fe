@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div class="w-full sm:w-auto">
     <UDropdownMenu :items="menuItems">
       <UButton
         icon="i-lucide-list-plus"
         label="Добавить маршрут"
         variant="soft"
         trailing-icon="i-lucide-chevron-down"
+        class="w-full justify-center sm:w-auto"
       />
     </UDropdownMenu>
 
@@ -31,11 +32,12 @@
           <UFormField label="Страна" name="country">
             <CountrySelect v-model="createState.country" />
           </UFormField>
-          <div class="flex justify-end">
+          <div class="flex justify-stretch sm:justify-end">
             <UButton
               type="submit"
               label="Создать и подключить"
               :loading="isSubmitting"
+              class="w-full justify-center sm:w-auto"
             />
           </div>
         </UForm>
@@ -61,12 +63,13 @@
           <p v-if="!availableTrips.length" class="text-sm text-muted">
             Нет маршрутов, которые можно подключить.
           </p>
-          <div class="flex justify-end">
+          <div class="flex justify-stretch sm:justify-end">
             <UButton
               type="submit"
               label="Подключить"
               :disabled="!attachState.trip"
               :loading="isSubmitting"
+              class="w-full justify-center sm:w-auto"
             />
           </div>
         </UForm>

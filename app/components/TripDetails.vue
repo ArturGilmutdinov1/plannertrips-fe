@@ -2,35 +2,39 @@
   <UPage>
     <UPageHeader :title="pageTitle" :description="pageDescription">
       <template #links>
-        <MapForTrip />
-        <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
-        <ChildTripAddButton
-          :trip-id="trip.id"
-          :child-trip-ids="childTrips.map((child) => child.id)"
-        />
-        <UDropdownMenu
-          :items="[
-            {
-              label: 'Редактировать',
-              icon: 'i-lucide-pencil',
-              onSelect: editTrip,
-            },
-            { type: 'separator' },
-            {
-              label: 'Удалить',
-              icon: 'i-lucide-trash-2',
-              color: 'error',
-              onSelect: removeTrip,
-            },
-          ]"
-        >
-          <UButton
-            color="neutral"
-            variant="ghost"
-            icon="i-lucide-ellipsis-vertical"
-            aria-label="Действия"
+        <div class="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap">
+          <MapForTrip />
+          <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
+          <ChildTripAddButton
+            :trip-id="trip.id"
+            :child-trip-ids="childTrips.map((child) => child.id)"
           />
-        </UDropdownMenu>
+          <UDropdownMenu
+            :items="[
+              {
+                label: 'Редактировать',
+                icon: 'i-lucide-pencil',
+                onSelect: editTrip,
+              },
+              { type: 'separator' },
+              {
+                label: 'Удалить',
+                icon: 'i-lucide-trash-2',
+                color: 'error',
+                onSelect: removeTrip,
+              },
+            ]"
+          >
+            <UButton
+              color="neutral"
+              variant="soft"
+              icon="i-lucide-ellipsis-vertical"
+              label="Действия"
+              class="w-full justify-center sm:w-auto sm:[&_.truncate]:hidden"
+              aria-label="Действия"
+            />
+          </UDropdownMenu>
+        </div>
       </template>
     </UPageHeader>
 
@@ -78,7 +82,7 @@
           :to="`/trips/${trip.id}/places/${place.id}`"
         >
           <UCard
-            class="h-80 overflow-hidden hover:ring-2 hover:ring-primary/50 transition"
+            class="h-72 overflow-hidden transition hover:ring-2 hover:ring-primary/50 sm:h-80"
           >
             <!-- Шапка есть всегда, чтобы карточки с картинкой и без были одной высоты -->
             <template #header>
@@ -120,7 +124,7 @@
       </div>
       <UCard v-else-if="!childTrips.length" class="border-dashed">
         <div
-          class="flex flex-col items-center justify-center gap-4 py-12 text-center min-h-[400px]"
+          class="flex min-h-72 flex-col items-center justify-center gap-4 py-8 text-center sm:min-h-96 sm:py-12"
         >
           <UAvatar
             icon="i-lucide-map-pinned"

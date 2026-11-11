@@ -4,6 +4,7 @@
     label="Добавить место"
     variant="soft"
     :to="`/trips/${tripId}/places/new`"
+    class="w-full justify-center sm:w-auto"
   />
 </template>
 

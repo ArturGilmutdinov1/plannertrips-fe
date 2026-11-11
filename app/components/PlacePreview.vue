@@ -1,22 +1,22 @@
 <template>
-  <div v-if="place" class="max-w-4xl mx-auto p-4 sm:p-6">
+  <div v-if="place" class="mx-auto max-w-4xl">
     <UCard class="overflow-hidden">
       <!-- Блок с картинкой (если она есть) -->
       <template v-if="place.img" #header>
         <img
           :src="place.img"
           :alt="place.name"
-          class="h-64 sm:h-96 w-full object-cover"
+          class="h-48 w-full object-cover sm:h-96"
         />
       </template>
-      <UButton color="error" @click="removePlace" label="Удалить" />
+      <UButton class="w-full justify-center sm:w-auto" color="error" @click="removePlace" label="Удалить" />
 
       <!-- Основной контент -->
       <div class="space-y-6 p-2 sm:p-4">
         <!-- Заголовок и категория (если есть) -->
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:gap-4">
           <h1
-            class="text-2xl sm:text-4xl font-bold text-highlighted leading-tight break-words"
+            class="min-w-0 text-2xl font-bold leading-tight text-highlighted break-words sm:text-4xl"
           >
             {{ place.name }}
           </h1>
@@ -26,7 +26,7 @@
             :label="PLACE_CATEGORY_LABELS[place.category]"
             variant="subtle"
             size="lg"
-            class="shrink-0"
+            class="max-w-full shrink-0"
           />
         </div>
 
