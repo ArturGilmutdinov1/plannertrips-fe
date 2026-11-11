@@ -6,8 +6,11 @@
   >
     <UButton
       icon="i-lucide-map"
+      label="Показать на карте"
       color="secondary"
       variant="soft"
+      size="lg"
+      class="w-full justify-center sm:w-auto max-sm:[&_.truncate]:hidden"
       aria-label="Показать на карте"
     />
 

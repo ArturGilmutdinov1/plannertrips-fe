@@ -3,8 +3,11 @@
     <UDropdownMenu :items="menuItems">
       <UButton
         icon="i-lucide-list-plus"
+        label="Добавить маршрут"
         variant="soft"
+        size="lg"
         trailing-icon="i-lucide-chevron-down"
+        class="w-full justify-center sm:w-auto max-sm:[&_.truncate]:hidden"
         aria-label="Добавить маршрут"
       />
     </UDropdownMenu>

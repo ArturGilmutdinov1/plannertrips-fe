@@ -2,7 +2,7 @@
   <UPage>
     <UPageHeader :title="pageTitle" :description="pageDescription">
       <template #links>
-        <div class="flex w-full flex-wrap gap-2 sm:w-auto">
+        <div class="grid w-full grid-cols-4 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <MapForTrip />
           <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
           <ChildTripAddButton
@@ -29,6 +29,9 @@
               color="neutral"
               variant="soft"
               icon="i-lucide-ellipsis-vertical"
+              label="Действия"
+              size="lg"
+              class="w-full justify-center sm:w-auto max-sm:[&_.truncate]:hidden"
               aria-label="Действия"
             />
           </UDropdownMenu>
@@ -138,11 +141,13 @@
               Добавьте первые места поездки
             </p>
           </div>
-          <PlaceAddButton :trip-id="trip.id" />
-          <ChildTripAddButton
-            :trip-id="trip.id"
-            :child-trip-ids="[]"
-          />
+          <div class="grid w-full max-w-xs grid-cols-2 gap-2 sm:flex sm:w-auto sm:max-w-none">
+            <PlaceAddButton :trip-id="trip.id" />
+            <ChildTripAddButton
+              :trip-id="trip.id"
+              :child-trip-ids="[]"
+            />
+          </div>
         </div>
       </UCard>
     </UPageBody>
