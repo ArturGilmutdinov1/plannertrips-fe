@@ -40,46 +40,57 @@
     </UPageHeader>
 
     <UPageBody>
-      <section v-if="childTrips.length" class="space-y-3">
-        <h2 class="text-lg font-semibold">Подключённые маршруты</h2>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <UCard
-            v-for="child in childTrips"
-            :key="child.id"
-            class="hover:ring-2 hover:ring-primary/50 transition"
-          >
-            <div class="flex items-start justify-between gap-3">
-              <NuxtLink :to="`/trips/${child.id}`" class="min-w-0 flex-1">
-                <h3 class="truncate font-semibold text-highlighted">
-                  {{ child.name }}
-                </h3>
-                <p class="mt-1 text-sm text-muted">
-                  {{
-                    child.description
-                      || child.country?.label
-                      || "Самостоятельный маршрут"
-                  }}
-                </p>
-              </NuxtLink>
-              <UButton
-                icon="i-lucide-unlink"
-                color="neutral"
-                variant="ghost"
-                aria-label="Отсоединить маршрут"
-                @click="detachChild(child.id)"
-              />
-            </div>
-          </UCard>
-        </div>
-      </section>
-
       <div
-        v-if="places.length"
+        v-if="places.length || childTrips.length"
         class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
+        <UCard
+          v-for="child in childTrips"
+          :key="`trip-${child.id}`"
+          class="h-72 overflow-hidden transition hover:ring-2 hover:ring-primary/50 sm:h-80"
+        >
+          <template #header>
+            <NuxtLink
+              :to="`/trips/${child.id}`"
+              class="flex h-40 w-full items-center justify-center rounded-md bg-elevated"
+            >
+              <UIcon name="i-lucide-route" class="size-10 text-dimmed" />
+            </NuxtLink>
+          </template>
+
+          <div class="space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <NuxtLink
+                :to="`/trips/${child.id}`"
+                class="min-w-0 flex-1 truncate font-semibold text-highlighted"
+              >
+                {{ child.name }}
+              </NuxtLink>
+              <div class="flex shrink-0 items-center gap-1">
+                <UBadge label="Маршрут" variant="subtle" />
+                <UButton
+                  icon="i-lucide-unlink"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  aria-label="Отсоединить маршрут"
+                  @click="detachChild(child.id)"
+                />
+              </div>
+            </div>
+            <p class="line-clamp-2 text-sm text-muted">
+              {{
+                child.description
+                  || child.country?.label
+                  || "Самостоятельный маршрут"
+              }}
+            </p>
+          </div>
+        </UCard>
+
         <NuxtLink
           v-for="place in places"
-          :key="place.id"
+          :key="`place-${place.id}`"
           :to="`/trips/${trip.id}/places/${place.id}`"
         >
           <UCard
@@ -123,7 +134,7 @@
           </UCard>
         </NuxtLink>
       </div>
-      <UCard v-else-if="!childTrips.length" class="border-dashed">
+      <UCard v-else class="border-dashed">
         <div
           class="flex min-h-72 flex-col items-center justify-center gap-4 py-8 text-center sm:min-h-96 sm:py-12"
         >
