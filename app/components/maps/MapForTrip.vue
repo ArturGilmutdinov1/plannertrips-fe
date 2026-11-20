@@ -9,12 +9,15 @@
       label="Показать на карте"
       color="secondary"
       variant="soft"
+      size="lg"
+      class="w-full justify-center sm:w-auto max-sm:[&_.truncate]:hidden"
+      aria-label="Показать на карте"
     />
 
     <template #body>
       <div class="relative">
         <LMap
-          style="height: 350px"
+          class="h-[55vh] min-h-72 sm:h-[350px]"
           :zoom="2"
           :center="[47.21322, -1.559482]"
           :use-global-leaflet="false"

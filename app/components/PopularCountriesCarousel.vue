@@ -1,14 +1,14 @@
 <template>
-  <div class="mb-8">
-    <h2 class="text-lg font-semibold mb-4">
-      Популярные направления
-    </h2>
-    <UButton
-      to="/destinations"
-      variant="link"
-      trailing-icon="i-lucide-arrow-right"
-      label="Показать все"
-    />
+  <div class="mb-6 sm:mb-8">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2 sm:mb-4">
+      <h2 class="text-lg font-semibold">Популярные направления</h2>
+      <UButton
+        to="/destinations"
+        variant="link"
+        trailing-icon="i-lucide-arrow-right"
+        label="Показать все"
+      />
+    </div>
     <UCarousel
       v-slot="{ item }"
       :items="items"
@@ -17,7 +17,7 @@
       dots
       class="w-full"
     >
-      <div class="p-4">
+      <div class="px-1 py-3 sm:p-4">
         <UCard class="h-full">
           <div class="flex flex-col gap-2">
             <UAvatar

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center py-8">
+  <div class="flex justify-center py-3 sm:py-8">
     <UPageCard class="w-full max-w-md">
       <UAuthForm
         title="Регистрация"

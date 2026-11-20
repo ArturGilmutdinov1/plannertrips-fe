@@ -44,7 +44,7 @@
           <CountrySelect v-model="state.country" />
         </UFormField>
 
-        <div class="flex justify-end pt-2">
+        <div class="flex justify-stretch pt-2 sm:justify-end">
           <UButton
             type="submit"
             icon="i-lucide-arrow-right"
@@ -52,6 +52,7 @@
             size="lg"
             label="Создать"
             :loading="isSubmitting"
+            class="w-full justify-center sm:w-auto"
           />
         </div>
       </UForm>

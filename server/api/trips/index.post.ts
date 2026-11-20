@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
     name,
     description: "",
     country: body.country ?? null,
+    childTripIds: [],
     createdAt: new Date().toISOString(),
   };
 

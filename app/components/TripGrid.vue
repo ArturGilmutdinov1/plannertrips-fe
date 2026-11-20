@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h2 class="text-lg font-semibold mb-4">
+    <h2 class="mb-3 text-lg font-semibold sm:mb-4">
       Мои маршруты
     </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
       <!-- Первая карточка — добавить -->
       <TripCreateModal />
 

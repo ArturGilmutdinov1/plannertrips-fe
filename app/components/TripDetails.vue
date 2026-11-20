@@ -7,31 +7,40 @@
         :description="pageDescription"
       >
         <template #links>
-          <MapForTrip />
-          <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
-          <UDropdownMenu
-            :items="[
-              {
-                label: 'Редактировать',
-                icon: 'i-lucide-pencil',
-                onSelect: editTrip,
-              },
-              { type: 'separator' },
-              {
-                label: 'Удалить',
-                icon: 'i-lucide-trash-2',
-                color: 'error',
-                onSelect: removeTrip,
-              },
-            ]"
-          >
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="i-lucide-ellipsis-vertical"
-              aria-label="Действия"
+          <div class="grid w-full grid-cols-4 gap-2 sm:flex sm:w-auto sm:flex-wrap">
+            <MapForTrip />
+            <PlaceAddButton v-if="places.length" :trip-id="trip.id" />
+            <ChildTripAddButton
+              :trip-id="trip.id"
+              :child-trip-ids="childTrips.map((child) => child.id)"
             />
-          </UDropdownMenu>
+            <UDropdownMenu
+              :items="[
+                {
+                  label: 'Редактировать',
+                  icon: 'i-lucide-pencil',
+                  onSelect: editTrip,
+                },
+                { type: 'separator' },
+                {
+                  label: 'Удалить',
+                  icon: 'i-lucide-trash-2',
+                  color: 'error',
+                  onSelect: removeTrip,
+                },
+              ]"
+            >
+              <UButton
+                color="neutral"
+                variant="soft"
+                icon="i-lucide-ellipsis-vertical"
+                label="Действия"
+                size="lg"
+                class="w-full justify-center sm:w-auto max-sm:[&_.truncate]:hidden"
+                aria-label="Действия"
+              />
+            </UDropdownMenu>
+          </div>
         </template>
       </UPageHeader>
     </template>
@@ -62,16 +71,60 @@
 
     <UPageBody>
       <div
-        v-if="places.length"
+        v-if="places.length || childTrips.length"
         class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
+        <UCard
+          v-for="child in childTrips"
+          :key="`trip-${child.id}`"
+          class="h-72 overflow-hidden transition hover:ring-2 hover:ring-primary/50 sm:h-80"
+        >
+          <template #header>
+            <NuxtLink
+              :to="`/trips/${child.id}`"
+              class="flex h-40 w-full items-center justify-center rounded-md bg-elevated"
+            >
+              <UIcon name="i-lucide-route" class="size-10 text-dimmed" />
+            </NuxtLink>
+          </template>
+
+          <div class="space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <NuxtLink
+                :to="`/trips/${child.id}`"
+                class="min-w-0 flex-1 truncate font-semibold text-highlighted"
+              >
+                {{ child.name }}
+              </NuxtLink>
+              <div class="flex shrink-0 items-center gap-1">
+                <UBadge label="Маршрут" variant="subtle" />
+                <UButton
+                  icon="i-lucide-unlink"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  aria-label="Отсоединить маршрут"
+                  @click="detachChild(child.id)"
+                />
+              </div>
+            </div>
+            <p class="line-clamp-2 text-sm text-muted">
+              {{
+                child.description
+                  || child.country?.label
+                  || "Самостоятельный маршрут"
+              }}
+            </p>
+          </div>
+        </UCard>
+
         <NuxtLink
           v-for="place in places"
-          :key="place.id"
+          :key="`place-${place.id}`"
           :to="`/trips/${trip.id}/places/${place.id}`"
         >
           <UCard
-            class="h-80 overflow-hidden hover:ring-2 hover:ring-primary/50 transition"
+            class="h-72 overflow-hidden transition hover:ring-2 hover:ring-primary/50 sm:h-80"
           >
             <!-- Шапка есть всегда, чтобы карточки с картинкой и без были одной высоты -->
             <template #header>
@@ -113,7 +166,7 @@
       </div>
       <UCard v-else class="border-dashed">
         <div
-          class="flex flex-col items-center justify-center gap-4 py-12 text-center min-h-[400px]"
+          class="flex min-h-72 flex-col items-center justify-center gap-4 py-8 text-center sm:min-h-96 sm:py-12"
         >
           <UAvatar
             icon="i-lucide-map-pinned"
@@ -129,7 +182,13 @@
               Добавьте первые места поездки
             </p>
           </div>
-          <PlaceAddButton :trip-id="trip.id" />
+          <div class="grid w-full max-w-xs grid-cols-2 gap-2 sm:flex sm:w-auto sm:max-w-none">
+            <PlaceAddButton :trip-id="trip.id" />
+            <ChildTripAddButton
+              :trip-id="trip.id"
+              :child-trip-ids="[]"
+            />
+          </div>
         </div>
       </UCard>
     </UPageBody>
@@ -159,6 +218,15 @@ const isEditing = ref(false);
 
 const propsTitle = ref(props.trip.name);
 const pageTitle = computed(() => propsTitle.value || "Новый маршрут");
+
+const { data: childTrips } = await useFetch<Trip[]>(
+  () => `/api/trips/${props.trip.id}/children`,
+  {
+    key: `trip-children-${props.trip.id}`,
+    default: () => [],
+  },
+);
+
 const pageDescription = computed(() =>
   props.trip.country?.label
     ? `План поездки: ${country?.value.label}`
@@ -169,6 +237,13 @@ const draftCountry = ref<CountryOption | undefined>(country.value);
 
 function editTrip() {
   isEditing.value = true;
+}
+
+async function detachChild(childId: string) {
+  await $fetch(`/api/trips/${props.trip.id}/children/${childId}`, {
+    method: "DELETE",
+  });
+  await refreshNuxtData(`trip-children-${props.trip.id}`);
 }
 
 async function removeTrip() {
