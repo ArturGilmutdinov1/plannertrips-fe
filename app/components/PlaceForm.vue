@@ -1,5 +1,6 @@
 <template>
   <UForm
+    :schema="schema"
     :state="state"
     class="mx-auto w-full max-w-md space-y-4"
     @submit="onSubmit"
@@ -52,7 +53,7 @@ const emit = defineEmits(["editPlace"]);
 const props = defineProps<{
   tripId: string;
   mode: "create" | "edit";
-  placeToEdit: UpdatePlacePayload;
+  placeToEdit?: UpdatePlacePayload;
 }>();
 const route = useRoute();
 const toast = useToast();
@@ -84,8 +85,7 @@ const state = reactive<Partial<Schema>>({
 
 if (props.placeToEdit) {
   state.name = props.placeToEdit.name;
-  state.category = props.placeToEdit.category;
-  state.img = props.placeToEdit.img;
+  state.category = props.placeToEdit.category ?? undefined;
   state.description = props.placeToEdit.description;
 }
 
@@ -103,12 +103,11 @@ function readAsDataUrl(file: File) {
 // 3. Обработчик отправки
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
-  console.log(props.mode);
 
   if (props.mode === "create") {
-    createPlace(event.data);
+    await createPlace(event.data);
   } else if (props.mode === "edit") {
-    editPlace(event.data);
+    await editPlace(event.data);
   }
 }
 
@@ -145,21 +144,21 @@ async function editPlace(data: Schema) {
       name: data.name,
       category: data.category ?? null,
       description: data.description ?? "",
-      img: data.img ? await readAsDataUrl(data.img) : null,
+      img: data.img ? await readAsDataUrl(data.img) : props.placeToEdit?.img ?? null,
     };
 
-    await $fetch<Place>(`/api/trips/${props.tripId}/places/{placeId}`, {
+    await $fetch<Place>(`/api/trips/${props.tripId}/places/${placeId}`, {
       method: "POST",
       body: payload,
     });
+    emit("editPlace");
   } catch (error) {
     toast.add({
       title: getErrorMessage(error, "Не удалось изменить место"),
       color: "error",
     });
   } finally {
-    isSubmitting.value = true;
-    emit("editPlace");
+    isSubmitting.value = false;
   }
 }
 </script>

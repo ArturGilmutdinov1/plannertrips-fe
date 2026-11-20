@@ -87,5 +87,5 @@ export async function updatePlace(
     return place;
   });
   await useStorage("data").setItem(KEY, nextStatePlaces); // ← добавить запись
-  return nextStatePlaces.find((place) => place.id === placeId); // ← вернуть обновлённую
+  return nextStatePlaces.find((place) => place.id === placeId && place.tripId === tripId);
 }

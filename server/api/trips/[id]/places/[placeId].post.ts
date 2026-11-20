@@ -1,4 +1,4 @@
-import { UpdatePlacePayload } from "~~/shared/types/place";
+import type { UpdatePlacePayload } from "~~/shared/types/place";
 
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event);
@@ -14,19 +14,19 @@ export default defineEventHandler(async (event) => {
       message: "Некорректные параметры запроса",
     });
   }
-  if (!placeData.name?.trim()) {
+  if (typeof placeData?.name !== "string" || !placeData.name.trim()) {
     throw createError({ statusCode: 400, message: "Поле name обязательно" });
   }
 
   const updateDate = await updatePlace(tripId, placeId, {
-    name: placeData.name,
+    name: placeData.name.trim(),
     category: placeData.category,
     description: placeData.description,
     img: placeData.img,
   });
 
   if (!updateDate) {
-    throw createError({ statusCode: 404, message: "Поездка не найдена" });
+    throw createError({ statusCode: 404, message: "Локация не найдена" });
   }
-  return;
+  return updateDate;
 });

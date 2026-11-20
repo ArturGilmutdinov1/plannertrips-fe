@@ -26,7 +26,7 @@
       </UDropdownMenu>
     </ClientOnly>
   </div>
-  <div v-if="!isEditing" class="max-w-4xl mx-auto p-4 sm:p-6">
+  <div v-if="place && !isEditing" class="max-w-4xl mx-auto p-4 sm:p-6">
     <UCard class="overflow-hidden">
       <!-- Блок с картинкой (если она есть) -->
       <template v-if="place.img" #header>
@@ -65,11 +65,11 @@
     </UCard>
   </div>
   <PlaceForm
-    :placeId="placeId"
+    :trip-id="tripId"
     :mode="'edit'"
     :placeToEdit="placeToEdit"
-    v-if="isEditing"
-    @edit-place="editPlace"
+    v-if="isEditing && placeToEdit"
+    @edit-place="onPlaceEdited"
   />
 </template>
 
@@ -78,12 +78,12 @@ import type { Place, UpdatePlacePayload } from "#shared/types/place";
 import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
 
 const route = useRoute();
-const tripId = route.params.id;
+const tripId = route.params.id as string;
 const placeId = route.params.placeId;
 
 const isEditing = ref(false);
 
-const { data: place, error } = await useFetch<Place>(
+const { data: place, error, refresh } = await useFetch<Place>(
   () => `/api/trips/${tripId}/places/${placeId}`,
 );
 
@@ -91,9 +91,9 @@ const placeToEdit = computed<UpdatePlacePayload | null>(() => {
   if (!place.value) return null;
   return {
     name: place.value.name,
-    category: place.value.category ?? "",
+    category: place.value.category,
     description: place.value.description ?? "",
-    img: place.value.img ?? "",
+    img: place.value.img,
   };
 });
 
@@ -126,5 +126,10 @@ async function removePlace() {
 
 function editPlace() {
   isEditing.value = !isEditing.value;
+}
+
+async function onPlaceEdited() {
+  await refresh();
+  isEditing.value = false;
 }
 </script>
