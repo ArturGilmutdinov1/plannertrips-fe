@@ -1,5 +1,32 @@
 <template>
-  <div v-if="place" class="max-w-4xl mx-auto p-4 sm:p-6">
+  <div class="flex justify-end mb-4">
+    <ClientOnly>
+      <UDropdownMenu
+        :items="[
+          {
+            label: 'Редактировать',
+            icon: 'i-lucide-pencil',
+            onSelect: editPlace,
+          },
+          { type: 'separator' },
+          {
+            label: 'Удалить',
+            icon: 'i-lucide-trash-2',
+            color: 'error',
+            onSelect: removePlace,
+          },
+        ]"
+      >
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-ellipsis-vertical"
+          aria-label="Действия"
+        />
+      </UDropdownMenu>
+    </ClientOnly>
+  </div>
+  <div v-if="!isEditing" class="max-w-4xl mx-auto p-4 sm:p-6">
     <UCard class="overflow-hidden">
       <!-- Блок с картинкой (если она есть) -->
       <template v-if="place.img" #header>
@@ -9,8 +36,6 @@
           class="h-64 sm:h-96 w-full object-cover"
         />
       </template>
-      <UButton color="error" @click="removePlace" label="Удалить" />
-
       <!-- Основной контент -->
       <div class="space-y-6 p-2 sm:p-4">
         <!-- Заголовок и категория (если есть) -->
@@ -39,19 +64,38 @@
       </div>
     </UCard>
   </div>
+  <PlaceForm
+    :placeId="placeId"
+    :mode="'edit'"
+    :placeToEdit="placeToEdit"
+    v-if="isEditing"
+    @edit-place="editPlace"
+  />
 </template>
 
 <script setup lang="ts">
-import type { Place } from "#shared/types/place";
+import type { Place, UpdatePlacePayload } from "#shared/types/place";
 import { PLACE_CATEGORY_LABELS } from "#shared/utils/placeCategories";
 
 const route = useRoute();
 const tripId = route.params.id;
 const placeId = route.params.placeId;
 
+const isEditing = ref(false);
+
 const { data: place, error } = await useFetch<Place>(
   () => `/api/trips/${tripId}/places/${placeId}`,
 );
+
+const placeToEdit = computed<UpdatePlacePayload | null>(() => {
+  if (!place.value) return null;
+  return {
+    name: place.value.name,
+    category: place.value.category ?? "",
+    description: place.value.description ?? "",
+    img: place.value.img ?? "",
+  };
+});
 
 if (error.value) {
   throw createError({
@@ -78,5 +122,9 @@ async function removePlace() {
     // 5. Обрабатываем ошибки (например, 404 или 500)
     console.error("Ошибка при удалении:", error);
   }
+}
+
+function editPlace() {
+  isEditing.value = !isEditing.value;
 }
 </script>

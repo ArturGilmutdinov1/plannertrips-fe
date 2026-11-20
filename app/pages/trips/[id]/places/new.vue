@@ -1,5 +1,5 @@
 <template>
-  <PlaceForm :trip-id="tripId" />
+  <PlaceForm :trip-id="tripId" mode="create" />
 </template>
 
 <script setup lang="ts">

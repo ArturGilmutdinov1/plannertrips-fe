@@ -18,3 +18,10 @@ export interface CreatePlacePayload {
   description: string;
   img: string | null;
 }
+
+export interface UpdatePlacePayload {
+  name: string;
+  category: PlaceCategory | null;
+  description: string;
+  img: string | null;
+}

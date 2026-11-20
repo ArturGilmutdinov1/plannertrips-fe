@@ -1,6 +1,6 @@
 // Мок-хранилище мест поездок, пока нет бэкенда.
 // Nitro-маунт "data" в dev пишет в .data/kv, поэтому данные переживают перезапуск.
-import type { Place } from "#shared/types/place";
+import type { Place, UpdatePlacePayload } from "#shared/types/place";
 
 const KEY = "mock:places";
 
@@ -66,4 +66,26 @@ export async function removePlace(
     (place) => !(place.id === placeId && place.tripId === tripId),
   );
   await useStorage("data").setItem(KEY, filtered);
+}
+
+export async function updatePlace(
+  tripId: string,
+  placeId: string,
+  placeData: UpdatePlacePayload,
+) {
+  const places = await getAllPlaces();
+  const nextStatePlaces = places.map((place) => {
+    if (place.id === placeId && place.tripId === tripId) {
+      return {
+        ...place,
+        name: placeData.name,
+        category: placeData.category,
+        description: placeData.description,
+        img: placeData.img,
+      };
+    }
+    return place;
+  });
+  await useStorage("data").setItem(KEY, nextStatePlaces); // ← добавить запись
+  return nextStatePlaces.find((place) => place.id === placeId); // ← вернуть обновлённую
 }
